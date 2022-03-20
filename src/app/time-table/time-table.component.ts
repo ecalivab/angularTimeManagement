@@ -11,7 +11,7 @@ import { DateTimeService, TimeTableItem } from '../date-time.service';
 
 export class TimeTableComponent {
   
-  MonthlyTable:TimeTableItem[] = [];
+  //MonthlyTable:TimeTableItem[] = [];
   dataSource:any;
   selection:any;
   displayedColumns:string[] = [];
@@ -28,13 +28,44 @@ export class TimeTableComponent {
     let dateObj = new Date();
     let month = dateObj.getMonth(); 
     let year = dateObj.getFullYear();
-    this.MonthlyTable = this.dateTimeService.createTable(month,year);
+    this.dateTimeService.createTable(month,year);
   }
   
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     this.getDefaultMonthlyTable();
-    this.dataSource = new MatTableDataSource<TimeTableItem>(this.MonthlyTable);
+    this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+  }
+  
+  clearTable(){
+    this.dateTimeService.clear();
+    this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+  }
+
+  nextMonth(){
+    const currentDate = this.dateTimeService.getCurrentMonthYear();
+    if(currentDate.currentMonth != -10) { //No Error
+      this.dateTimeService.clear();
+      const checkedDate = this.dateTimeService.checkNewYear(currentDate.currentMonth+1, currentDate.currentYear);
+      this.dateTimeService.createTable(checkedDate.month, checkedDate.year);
+      this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+    }
+    else{
+      alert("Something Wrong Happend!");
+    }
+  }
+
+  previousMonth(){
+    const currentDate = this.dateTimeService.getCurrentMonthYear();
+    if(currentDate.currentMonth != -10) { //No Error
+      this.dateTimeService.clear();
+      const checkedDate = this.dateTimeService.checkNewYear(currentDate.currentMonth-1, currentDate.currentYear);
+      this.dateTimeService.createTable(checkedDate.month, checkedDate.year);
+      this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+    }
+    else{
+      alert("Something Wrong Happend!");
+    }
   }
 
 }

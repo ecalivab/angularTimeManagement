@@ -16,13 +16,14 @@ export interface TimeTableItem {
 export class DateTimeService {
 
   constructor() { }
+
   MonthlyTable:TimeTableItem[] = [];
 
   clear(){
     this.MonthlyTable = [];
   }
 
-  createTable (month:number, year:number):TimeTableItem[] {
+  createTable (month:number, year:number):void {
     var date = new Date(year, month, 1);
     while (date.getMonth() === month) {
       var item:TimeTableItem = {
@@ -38,6 +39,30 @@ export class DateTimeService {
       }
       date.setDate(date.getDate() + 1);
     }
-    return this.MonthlyTable;
+    return;
   }
+
+  getCurrentMonthYear() {
+    if (this.MonthlyTable.length > 0) {
+      let currentMonth = this.MonthlyTable[0].Date.getMonth(),
+          currentYear  = this.MonthlyTable[0].Date.getFullYear();
+      return {currentMonth, currentYear};
+    }
+    return {'currentMonth':-10, 'currentYear':-10};
+  }
+  
+  checkNewYear(month:number, year:number){
+    if(month > 11) {
+      year+=1;
+      month = 0;
+      return {month, year};
+    }
+    if(month < 0) {
+      year-=1;
+      month = 11;
+      return {month, year};
+    }
+    return {month, year};
+  }
+
 }

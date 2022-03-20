@@ -28,7 +28,7 @@
           [checked]="selection.isSelected(row)"
           [(ngModel)]="row.Ferie"
           [disabled]="row.excluded">
-          <!-- *ngIf="!row.excluded" -->
+          <!--(ngModel binds the value of row.Ferie that I can use it to disable the other columns) -->
         </mat-checkbox>
       </td>
     </ng-container>
@@ -39,7 +39,6 @@
        <td mat-cell *matCellDef="let row">
         <mat-checkbox
           (click)="$event.stopPropagation()"
-          (change)="$event ? selection.toggle(row) : null"
           [checked]="row.Ferie ? false: row.Ufficio"
           [disabled]="row.Ferie">
           <!-- *ngIf="!row.excluded" -->
@@ -51,5 +50,4 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
         [ngStyle]="row.Ferie && {'background-color': 'lightgrey'}"></tr>
   </table>
-
 </div>

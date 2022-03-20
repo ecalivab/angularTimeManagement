@@ -19,3 +19,11 @@
 .dashboard-card-content {
   text-align: center;
 }
+
+#buttonForward {
+  margin-left: 200px;
+}
+
+#buttonPrevious {
+  margin-right: 200px;
+}

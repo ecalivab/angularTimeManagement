@@ -26,7 +26,7 @@
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
-            Time-Table
+            <h1>Time-Table of</h1>
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
               <mat-icon>more_vert</mat-icon>
             </button>
@@ -37,7 +37,21 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div><app-time-table></app-time-table></div>
+          <div class="btn-group py-3">
+            <button mat-raised-button color="accent" title="Previous Month" id="buttonPrevious" (click)="dateTable.previousMonth()">
+              <mat-icon aria-hidden="false" aria-label="previous" style="transform: rotate(180deg)">forward</mat-icon>
+            </button>
+            <button mat-raised-button color="accent" title="Next Month" id="buttonForward" (click)="dateTable.nextMonth()">
+              <mat-icon aria-hidden="false" aria-label="next">forward</mat-icon>
+            </button>
+          </div>
+          <!--child variable #dateTable-->
+          <div><app-time-table #dateTable></app-time-table></div>
+          <div class="mt-3 btn-group float-end me-4" role="group">
+            <button mat-raised-button class="me-2" color="primary">Save</button>
+            <!--Bind Child Function with Parent using a local variable-->
+            <button mat-raised-button color="warn" (click)="dateTable.clearTable()">Clear</button>
+          </div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -46,7 +60,7 @@
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
-            PlaceHolder 2!!!!!
+            <h1>Statistics</h1>
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
               <mat-icon>more_vert</mat-icon>
             </button>
@@ -56,8 +70,8 @@
             </mat-menu>
           </mat-card-title>
         </mat-card-header>
-        <mat-card-content class="dashboard-card-content">
-          <div>Hola esto es un placeholder</div>
+        <mat-card-content class="dashboard-card-content float-start">
+          <div><app-statistics></app-statistics></div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
