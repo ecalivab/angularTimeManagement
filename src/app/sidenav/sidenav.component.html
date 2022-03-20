@@ -1,0 +1,33 @@
+<mat-sidenav-container class="sidenav-container" autosize="true">
+  <mat-sidenav #drawer
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+    <button mat-mini-fab id="SideNavButton" color="warn" class="ms-3" (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="fs-5 mt-1 me-4" [hidden]="collapse">Time Management</span>
+      
+    <mat-nav-list>
+      <mat-list-item *ngFor="let item of menuItems" class="with-icon padded">
+        <mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
+        <h4 mat-line [hidden]="collapse">{{ item.name }}</h4>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Semantyca</span>
+    </mat-toolbar>
+    <app-dashboard></app-dashboard>
+  </mat-sidenav-content>
+</mat-sidenav-container>
