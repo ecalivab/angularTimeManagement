@@ -44,25 +44,16 @@ export class DateTimeService {
     return;
   }
 
-  getCurrentMonthYear() {
-    if(this.MonthlyTable.pipe(isEmpty())) {
-      var currentMonth: number,
-          currentYear: number;
-      return {'currentMonth': this.MonthlyTable.pipe(map(result => currentMonth = result[0].Date.getMonth())), 'currentYear': this.MonthlyTable.pipe(map(result => currentYear = result[0].Date.getFullYear()))};
-    }
-    return {'currentMonth':-10, 'currentYear':-10};
+  getNewMonth(direction: string):void {
+    this.MonthlyTable.subscribe (table=> {
+      const data = table.length > 0 ? {'currentMonth': table[0].Date.getMonth(), 'currentYear':table[0].Date.getFullYear()} : {'currentMonth':-10, 'currentYear':-10};
+      const newMonth = direction == 'up' ? data.currentMonth + 1 : data.currentMonth -1;
+      const checkedData = this.checkNewYear(newMonth,data.currentYear);
+      this.clear();
+      this.createTable(checkedData.month,checkedData.year);
+    })    
   }
-  
 
-  // getCurrentMonthYear() {
-  //   if (this.MonthlyTable.pipe(map  result.length) > 0) {
-  //     let currentMonth = this.MonthlyTable[0].Date.getMonth(),
-  //         currentYear  = this.MonthlyTable[0].Date.getFullYear();
-  //     return {currentMonth, currentYear};
-  //   }
-  //   return {'currentMonth':-10, 'currentYear':-10};
-  // }
-  
   checkNewYear(month:number, year:number){
     if(month > 11) {
       year+=1;

@@ -2,8 +2,6 @@ import {SelectionModel} from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { Component } from '@angular/core';
 import { DateTimeService, TimeTableItem } from '../date-time.service';
-import { Observable } from 'rxjs';
-import { catchError, map, tap, isEmpty } from 'rxjs/operators';
 
 @Component({
   selector: 'app-time-table',
@@ -45,30 +43,16 @@ export class TimeTableComponent {
   }
 
   nextMonth(){
-    const currentDate = this.dateTimeService.getCurrentMonthYear();
-    if(currentDate.currentMonth != -10) { //No Error
-      this.dateTimeService.clear();
-      const checkedDate = this.dateTimeService.checkNewYear(Number(currentDate.currentMonth) + 1, Number(currentDate.currentYear));
-      this.dateTimeService.createTable(checkedDate.month, checkedDate.year);
-      this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
-    }
-    else{
-      alert("Something Wrong Happend!");
-    }
+    const direction = 'up';
+    this.dateTimeService.getNewMonth(direction);
+    this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
   previousMonth(){
-    const currentDate = this.dateTimeService.getCurrentMonthYear();
-    if(currentDate.currentMonth != -10) { //No Error
-      this.dateTimeService.clear();
-      const checkedDate = this.dateTimeService.checkNewYear(Number(currentDate.currentMonth)-1, Number(currentDate.currentYear));
-      this.dateTimeService.createTable(checkedDate.month, checkedDate.year);
-      this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
-    }
-    else{
-      alert("Something Wrong Happend!");
-    }
-  }
+   const direction = "down";
+   this.dateTimeService.getNewMonth(direction);
+   this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+  } 
 
   saveTable(){
     this.dateTimeService.MonthlyTable.subscribe(result => console.log(result));
