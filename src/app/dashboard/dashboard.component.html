@@ -37,18 +37,18 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div class="btn-group py-3">
-            <button mat-raised-button color="accent" title="Previous Month" id="buttonPrevious" (click)="dateTable.previousMonth()">
+          <div class="container py-3 position-relative mb-4">
+            <button mat-raised-button color="accent" title="Previous Month" id="buttonPrevious" class="position-absolute start-0" (click)="dateTable.previousMonth()">
               <mat-icon aria-hidden="false" aria-label="previous" style="transform: rotate(180deg)">forward</mat-icon>
             </button>
-            <button mat-raised-button color="accent" title="Next Month" id="buttonForward" (click)="dateTable.nextMonth()">
+            <button mat-raised-button color="accent" title="Next Month" id="buttonForward" class="position-absolute end-0" (click)="dateTable.nextMonth()">
               <mat-icon aria-hidden="false" aria-label="next">forward</mat-icon>
             </button>
           </div>
           <!--child variable #dateTable-->
           <div><app-time-table #dateTable></app-time-table></div>
           <div class="mt-3 btn-group float-end me-4" role="group">
-            <button mat-raised-button class="me-2" color="primary">Save</button>
+            <button mat-raised-button class="me-2" color="primary" (click)="dateTable.saveTable()">Save</button>
             <!--Bind Child Function with Parent using a local variable-->
             <button mat-raised-button color="warn" (click)="dateTable.clearTable()">Clear</button>
           </div>

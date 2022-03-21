@@ -1,5 +1,7 @@
+import { isNgTemplate } from '@angular/compiler';
 import { Injectable } from '@angular/core';
-
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap, isEmpty } from 'rxjs/operators';
 
 export interface TimeTableItem {
   Date: Date;
@@ -17,10 +19,10 @@ export class DateTimeService {
 
   constructor() { }
 
-  MonthlyTable:TimeTableItem[] = [];
+  MonthlyTable:Observable<TimeTableItem[]> = of([]);
 
   clear(){
-    this.MonthlyTable = [];
+    this.MonthlyTable = of([]);
   }
 
   createTable (month:number, year:number):void {
@@ -35,7 +37,7 @@ export class DateTimeService {
       }
 
       if(item.Date.getDay() !== 0 && item.Date.getDay() !== 6) {
-        this.MonthlyTable.push(item);
+        this.MonthlyTable.subscribe(result => result.push(item));
       }
       date.setDate(date.getDate() + 1);
     }
@@ -43,13 +45,23 @@ export class DateTimeService {
   }
 
   getCurrentMonthYear() {
-    if (this.MonthlyTable.length > 0) {
-      let currentMonth = this.MonthlyTable[0].Date.getMonth(),
-          currentYear  = this.MonthlyTable[0].Date.getFullYear();
-      return {currentMonth, currentYear};
+    if(this.MonthlyTable.pipe(isEmpty())) {
+      var currentMonth: number,
+          currentYear: number;
+      return {'currentMonth': this.MonthlyTable.pipe(map(result => currentMonth = result[0].Date.getMonth())), 'currentYear': this.MonthlyTable.pipe(map(result => currentYear = result[0].Date.getFullYear()))};
     }
     return {'currentMonth':-10, 'currentYear':-10};
   }
+  
+
+  // getCurrentMonthYear() {
+  //   if (this.MonthlyTable.pipe(map  result.length) > 0) {
+  //     let currentMonth = this.MonthlyTable[0].Date.getMonth(),
+  //         currentYear  = this.MonthlyTable[0].Date.getFullYear();
+  //     return {currentMonth, currentYear};
+  //   }
+  //   return {'currentMonth':-10, 'currentYear':-10};
+  // }
   
   checkNewYear(month:number, year:number){
     if(month > 11) {
@@ -63,6 +75,26 @@ export class DateTimeService {
       return {month, year};
     }
     return {month, year};
+  }
+
+  getTotalHours():Observable<number> {
+    return this.MonthlyTable.pipe(map(result => result.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Ore, 0)));
+  }
+
+  getWorkingDays():Observable<number>{
+    return this.MonthlyTable.pipe(map(result=> result.filter(item=> item.Ferie === false).length));
+  }
+
+  getHolidays(): Observable<number>{
+    return this.MonthlyTable.pipe(map(result => result.filter(item => item.Ferie === true).length));
+  }
+  
+  getOfficeDays():Observable<number>{
+    return this.MonthlyTable.pipe(map(result => result.filter(item => item.Ferie === false && item.Ufficio === true).length));
+  }
+
+  getTotalWorkingDays(){
+    return this.MonthlyTable.pipe(map(result => result.length));
   }
 
 }

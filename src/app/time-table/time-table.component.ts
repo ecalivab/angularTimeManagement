@@ -2,6 +2,8 @@ import {SelectionModel} from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { Component } from '@angular/core';
 import { DateTimeService, TimeTableItem } from '../date-time.service';
+import { Observable } from 'rxjs';
+import { catchError, map, tap, isEmpty } from 'rxjs/operators';
 
 @Component({
   selector: 'app-time-table',
@@ -34,21 +36,21 @@ export class TimeTableComponent {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     this.getDefaultMonthlyTable();
-    this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+    this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
   
   clearTable(){
     this.dateTimeService.clear();
-    this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+    this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
   nextMonth(){
     const currentDate = this.dateTimeService.getCurrentMonthYear();
     if(currentDate.currentMonth != -10) { //No Error
       this.dateTimeService.clear();
-      const checkedDate = this.dateTimeService.checkNewYear(currentDate.currentMonth+1, currentDate.currentYear);
+      const checkedDate = this.dateTimeService.checkNewYear(Number(currentDate.currentMonth) + 1, Number(currentDate.currentYear));
       this.dateTimeService.createTable(checkedDate.month, checkedDate.year);
-      this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+      this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
     }
     else{
       alert("Something Wrong Happend!");
@@ -59,13 +61,17 @@ export class TimeTableComponent {
     const currentDate = this.dateTimeService.getCurrentMonthYear();
     if(currentDate.currentMonth != -10) { //No Error
       this.dateTimeService.clear();
-      const checkedDate = this.dateTimeService.checkNewYear(currentDate.currentMonth-1, currentDate.currentYear);
+      const checkedDate = this.dateTimeService.checkNewYear(Number(currentDate.currentMonth)-1, Number(currentDate.currentYear));
       this.dateTimeService.createTable(checkedDate.month, checkedDate.year);
-      this.dataSource = new MatTableDataSource<TimeTableItem>(this.dateTimeService.MonthlyTable);
+      this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
     }
     else{
       alert("Something Wrong Happend!");
     }
+  }
+
+  saveTable(){
+    this.dateTimeService.MonthlyTable.subscribe(result => console.log(result));
   }
 
 }
