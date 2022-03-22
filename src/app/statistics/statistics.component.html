@@ -1,12 +1,24 @@
 <div class="container">
-    <p class="fs-5" *ngIf="workingHours$ | async as wh"> Total Working Hours: {{wh}} </p>
-    <p class="fs-5" *ngIf="workingDays$  | async as wd">Total Working Days: {{wd}} </p>
-    <p class="fs-5" *ngIf="(holidays$     | async) as hd">Total Holidays: {{hd}} </p>
-    <p class="fs-5" *ngIf="officeDays$   | async as wh">Totals Days in office: {{wh}} </p>
-    <ng-container *ngIf="holidays$ | async as hd; else elseTemplate">
+    <p class="fs-5" *ngIf="workingHours$ | async as  wh"> Total Working Hours: {{wh}} </p>
+    <p class="fs-5" *ngIf="workingDays$  | async as  wd">Total Working Days: {{wd}} </p>
+    <p class="fs-5" *ngIf="officeDays$   | async as  of">Totals Days in office: {{of}} </p>
+    <ng-container *ngIf="holidays$ |async as hd; else elseTemplate">
         <p class="fs-5">Total Holidays: {{hd}}</p>
     </ng-container>
     <ng-template #elseTemplate>
         <p class="fs-5">Total Holidays: 0</p>
     </ng-template>
+</div>
+<ng-container class="container">
+    <button (click)="LogTable()">Console Log</button>
+</ng-container>
+
+<!-- Another Way To Do It
+<ng-container>
+    <p class="fs-5" *ngIf="testEmitter$ | async as  of2">{{of2}}</p>
+</ng-container> 
+-->
+
+<div class="container">
+    {{testEmitter2$ | async}}
 </div>

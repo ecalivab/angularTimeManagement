@@ -2,6 +2,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { Component } from '@angular/core';
 import { DateTimeService, TimeTableItem } from '../date-time.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-time-table',
@@ -15,6 +16,13 @@ export class TimeTableComponent {
   dataSource:any;
   selection:any;
   displayedColumns:string[] = [];
+
+  //-------- Test of an Observable Strong ---------
+  hello: string = "";
+  inputChanged($event:string){
+    this.dateTimeService.updateText($event);
+  }
+  //--------------End of Test ----------------------
 
   constructor(
     private dateTimeService: DateTimeService,
@@ -31,31 +39,35 @@ export class TimeTableComponent {
     this.dateTimeService.createTable(month,year);
   }
   
+  updateTable(table:TimeTableItem[]){
+    this.dateTimeService.updateTable(table); 
+  }
+
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     this.getDefaultMonthlyTable();
-    this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+    this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
   
   clearTable(){
     this.dateTimeService.clear();
-    this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+    this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
   nextMonth(){
     const direction = 'up';
     this.dateTimeService.getNewMonth(direction);
-    this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+    this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
   previousMonth(){
    const direction = "down";
    this.dateTimeService.getNewMonth(direction);
-   this.dateTimeService.MonthlyTable.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+   this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   } 
 
   saveTable(){
-    this.dateTimeService.MonthlyTable.subscribe(result => console.log(result));
+    this.dateTimeService.MonthlyTable$.subscribe(result => console.log(result));
   }
 
 }

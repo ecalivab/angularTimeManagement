@@ -1,3 +1,9 @@
+<ng-container>
+   <input matInput type="text" [(ngModel)]="hello" (ngModelChange)="inputChanged($event)" placeholder="Whatever!" name="hello">
+</ng-container>
+<br>
+
+
 <div class="mat-elevation-z8">
   <table mat-table [dataSource]="dataSource" class="full-width-table" matSort aria-label="Elements">
     <!-- Date Column -->
@@ -9,13 +15,13 @@
     <!-- Ore Column -->
     <ng-container matColumnDef="Ore">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Ore</th>
-      <td mat-cell *matCellDef="let row"><input matInput type="number" max="20" min="1" value="{{row.Ferie ? 0 : row.Ore}}" [disabled]="row.Ferie" [(ngModel)]="row.Ore"></td>
+      <td mat-cell *matCellDef="let row"><input matInput type="number" max="20" min="1" value="{{row.Ferie ? 0 : row.Ore}}" [disabled]="row.Ferie" [(ngModel)]="row.Ore" (ngModelChange)="updateTable(dataSource._data.value)"></td>
     </ng-container>
      
     <!-- Rol Column -->
     <ng-container matColumnDef="Rol">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Rol</th>
-      <td mat-cell *matCellDef="let row"><input type="number" matInput max="20" min="1" value="{{row.Ferie ? 0 : row.Rol}}" [disabled]="row.Ferie" [(ngModel)]="row.Rol"></td>
+      <td mat-cell *matCellDef="let row"><input type="number" matInput max="20" min="1" value="{{row.Ferie ? 0 : row.Rol}}" [disabled]="row.Ferie" [(ngModel)]="row.Rol" (ngModelChange)="updateTable(dataSource._data.value)"></td>
     </ng-container>
 
     <!-- Ferie Column -->
@@ -23,11 +29,11 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Ferie</th>
       <td mat-cell *matCellDef="let row">
         <mat-checkbox
-          (click)="$event.stopPropagation()"
           (change)="$event ? selection.toggle(row) : null"
           [checked]="selection.isSelected(row)"
           [(ngModel)]="row.Ferie"
-          [disabled]="row.excluded">
+          [disabled]="row.excluded"
+          (ngModelChange) = "updateTable(dataSource._data.value)">
           <!--(ngModel binds the value of row.Ferie that I can use it to disable the other columns) -->
         </mat-checkbox>
       </td>
@@ -38,10 +44,10 @@
        <th mat-header-cell *matHeaderCellDef mat-sort-header>Ufficio</th>
        <td mat-cell *matCellDef="let row">
         <mat-checkbox
-          (click)="$event.stopPropagation()"
           [checked]="row.Ferie ? false: row.Ufficio"
           [disabled]="row.Ferie"
-          [(ngModel)]="row.Ufficio">
+          [(ngModel)]="row.Ufficio"
+          (ngModelChange) = "updateTable(dataSource._data.value)">
           <!-- *ngIf="!row.excluded" -->
         </mat-checkbox>
       </td>
@@ -52,3 +58,4 @@
         [ngStyle]="row.Ferie && {'background-color': 'lightgrey'}"></tr>
   </table>
 </div>
+
