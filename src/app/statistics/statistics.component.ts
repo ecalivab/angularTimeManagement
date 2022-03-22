@@ -13,14 +13,17 @@ export class StatisticsComponent implements OnInit {
   testEmitter2$ = new BehaviorSubject<string>(this.helloString);
   text:Observable<string> = new Observable<string>();
 
-  monthlyTable: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
+  
+  //*We inject dateTimeService
   constructor(private dateTimeService: DateTimeService) {}
-  //The dateTimeService property must be public because you're going to bind to it in the template.
 
+  monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
   workingHours$: Observable<number> = new Observable<number>();
   workingDays$: Observable<number>  = new Observable<number>();
   holidays$: Observable<number>     =  new Observable<number>();
   officeDays$: Observable<number>   = new Observable<number>();
+  currentMonth$: Observable<Date>   = new Observable<Date>();
+  totalWorkingDays$:Observable<number>   = new Observable<number>();
  
   //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
   //officeDays:number = 0;
@@ -37,11 +40,14 @@ export class StatisticsComponent implements OnInit {
     })
     //---------------END TEST-------------------
 
-    this.monthlyTable = this.dateTimeService.MonthlyTable$;
+    //*We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
+    this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
     this.workingHours$ = this.dateTimeService.getTotalHours();
     this.workingDays$  = this.dateTimeService.getWorkingDays();
     this.holidays$     = this.dateTimeService.getHolidays();
     this.officeDays$   = this.dateTimeService.getOfficeDays();
+    this.currentMonth$ = this.dateTimeService.getCurrentMonth();
+    this.totalWorkingDays$ = this.dateTimeService.getTotalWorkingDays();
 
     //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
     // this.monthlyTable.subscribe(result => {
@@ -51,13 +57,4 @@ export class StatisticsComponent implements OnInit {
     //---------------------------------------------------------------------------------------------  
   }
   
-  LogTable(){
-    this.monthlyTable.subscribe(
-      data => console.log(data)
-    );
-    this.text.subscribe(
-      str => console.log(str)
-    );
-  }
-
 }

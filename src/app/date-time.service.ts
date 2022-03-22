@@ -1,7 +1,7 @@
 import { isNgTemplate } from '@angular/compiler';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { catchError, map, tap, isEmpty } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 export interface TimeTableItem {
   Date: Date;
@@ -27,11 +27,11 @@ export class DateTimeService {
   }
   //--------------End of Test ----------------------
 
-  //Here, we create BehaviorSubject of type TimeTableItem[]. Behavior expects us to provide an initial value. We assign an empty array. The BehaviorSubject will always emit the latest list of TimeTableItem items as an array.
-  private _MonthlyTable:BehaviorSubject<any> = new BehaviorSubject([]);
-  //Also, it is advisable not to expose the BehaviorSubject outside the service. Hence we convert it to normal Observable and return it. This is because the methods like next, complete or error do not exist on normal observable.
+  //*Here, we create BehaviorSubject of type TimeTableItem[]. Behavior expects us to provide an initial value. We assign an empty array. The BehaviorSubject will always emit the latest list of TimeTableItem items as an array.
+  private readonly _MonthlyTable:BehaviorSubject<any> = new BehaviorSubject([]);
+  //*Also, it is advisable not to expose the BehaviorSubject outside the service. Hence we convert it to normal Observable and return it. This is because the methods like next, complete or error do not exist on normal observable.
   MonthlyTable$: Observable<TimeTableItem[]> = this._MonthlyTable.asObservable();
-  //The MonthlyTable will store the todo items in memory.
+  //*The MonthlyTable will store the todo items in memory.
   private MonthlyTable:TimeTableItem[] = [];
 
   constructor() { }
@@ -116,4 +116,7 @@ export class DateTimeService {
     return this.MonthlyTable$.pipe(map(result => result.length));
   }
 
+  getCurrentMonth():Observable<Date>{
+    return this.MonthlyTable$.pipe(map(res => res[0].Date)); //Doesn't work need to find a fix
+  }
 }

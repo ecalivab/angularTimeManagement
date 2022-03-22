@@ -2,7 +2,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { Component } from '@angular/core';
 import { DateTimeService, TimeTableItem } from '../date-time.service';
-import { Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-time-table',
@@ -12,10 +12,10 @@ import { Subject } from 'rxjs';
 
 export class TimeTableComponent {
   
-  //MonthlyTable:TimeTableItem[] = [];
-  dataSource:any;
-  selection:any;
+  dataSource:any; //*Holds Table Source Data.
+  selection:any; //*Array to get save the rows of Holidays selected.
   displayedColumns:string[] = [];
+  monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
 
   //-------- Test of an Observable Strong ---------
   hello: string = "";
@@ -31,7 +31,7 @@ export class TimeTableComponent {
      /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
      this.displayedColumns = ['Date', 'Ore','Rol','Ferie', 'Ufficio'];
   }
-
+  
   getDefaultMonthlyTable(): void {
     let dateObj = new Date();
     let month = dateObj.getMonth(); 
@@ -45,29 +45,30 @@ export class TimeTableComponent {
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //*We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
+    this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
     this.getDefaultMonthlyTable();
-    this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+    //*Create the table passing the new dataSource
+    //*Since dataSource is subscribe ngOnInit and will detect all the changes there is no need to update the dataSource on the clearTable(), nextMonth() ...
+    this.monthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
   
   clearTable(){
     this.dateTimeService.clear();
-    this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
   nextMonth(){
     const direction = 'up';
     this.dateTimeService.getNewMonth(direction);
-    this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
   previousMonth(){
    const direction = "down";
    this.dateTimeService.getNewMonth(direction);
-   this.dateTimeService.MonthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   } 
 
   saveTable(){
-    this.dateTimeService.MonthlyTable$.subscribe(result => console.log(result));
+    this.monthlyTable$.subscribe(result => console.log(result));
   }
 
 }

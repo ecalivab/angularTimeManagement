@@ -26,7 +26,12 @@
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
-            <h1>Time-Table of</h1>
+            <ng-container *ngIf="currentMonth$ | async as cm; else elseTemplate">
+                <h1>Time-Table of {{cm}}</h1>
+            </ng-container>
+            <ng-template #elseTemplate>
+              <h1>Time-Table</h1>
+            </ng-template>
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
               <mat-icon>more_vert</mat-icon>
             </button>
