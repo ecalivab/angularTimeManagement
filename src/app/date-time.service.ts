@@ -1,7 +1,7 @@
 import { isNgTemplate } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { first, map, take } from 'rxjs/operators';
 
 export interface TimeTableItem {
   Date: Date;
@@ -117,6 +117,6 @@ export class DateTimeService {
   }
 
   getCurrentMonth():Observable<Date>{
-    return this.MonthlyTable$.pipe(map(res => res[0].Date)); //Doesn't work need to find a fix
+    return this.MonthlyTable$.pipe(map(res => res.length> 0 ? res[0].Date : new Date())); //Add a Control because when I clear the array it cannot read the property Date and fail.
   }
 }
