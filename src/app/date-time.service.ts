@@ -1,7 +1,7 @@
 import { isNgTemplate } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { first, map, take } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 export interface TimeTableItem {
   Date: Date;
@@ -96,6 +96,17 @@ export class DateTimeService {
     return {month, year};
   }
 
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
+      // TODO: better job of transforming error for user consumption
+      //this.log(`${operation} failed: ${error.message}`);
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+ }
+
   getTotalHours():Observable<number> {
     return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Ore, 0)));
   }
@@ -117,6 +128,8 @@ export class DateTimeService {
   }
 
   getCurrentMonth():Observable<Date>{
-    return this.MonthlyTable$.pipe(map(res => res.length> 0 ? res[0].Date : new Date())); //Add a Control because when I clear the array it cannot read the property Date and fail.
+    return this.MonthlyTable$.pipe(map(res => res.length> 0 ? res[0].Date : new Date()), //Add a Control because when I clear the array it cannot read the property Date and fail.
+      catchError(this.handleError<any>('new Date()'))
+    );
   }
 }

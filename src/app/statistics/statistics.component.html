@@ -9,9 +9,6 @@
         <p class="fs-5">Total Holidays: 0</p>
     </ng-template>
 </div>
-<div class="container">
-    {{currentMonth$ | async |date:'MMMM'}}
-</div>
 <!-- Another Way To Do It
 <ng-container>
     <p class="fs-5" *ngIf="testEmitter$ | async as  of2">{{of2}}</p>
@@ -20,8 +17,4 @@
 
 <div class="container">
     {{testEmitter2$ | async}}
-</div>
-
-<div class="container">
-   Total Working Days on a Month: {{totalWorkingDays$ | async}}
 </div>

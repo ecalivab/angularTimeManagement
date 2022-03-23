@@ -22,8 +22,6 @@ export class StatisticsComponent implements OnInit {
   workingDays$: Observable<number>  = new Observable<number>();
   holidays$: Observable<number>     =  new Observable<number>();
   officeDays$: Observable<number>   = new Observable<number>();
-  currentMonth$: Observable<Date>   = new Observable<Date>();
-  totalWorkingDays$:Observable<number>   = new Observable<number>();
  
   //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
   //officeDays:number = 0;
@@ -46,8 +44,6 @@ export class StatisticsComponent implements OnInit {
     this.workingDays$  = this.dateTimeService.getWorkingDays();
     this.holidays$     = this.dateTimeService.getHolidays();
     this.officeDays$   = this.dateTimeService.getOfficeDays();
-    this.currentMonth$ = this.dateTimeService.getCurrentMonth();
-    this.totalWorkingDays$ = this.dateTimeService.getTotalWorkingDays();
 
     //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
     // this.monthlyTable.subscribe(result => {

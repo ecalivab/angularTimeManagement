@@ -5,7 +5,7 @@ import { DateTimeService,TimeTableItem} from '../date-time.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit{
 
@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit{
   ngOnInit(): void {
     //*We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
     this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
-    //this.currentMonth$ = this.dateTimeService.getCurrentMonth();
+    this.currentMonth$ = this.dateTimeService.getCurrentMonth();
   }
 
 }
