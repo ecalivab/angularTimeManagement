@@ -1,6 +1,6 @@
 <div class="grid-container">
   <h1 class="mat-h1">Time-Sheet</h1>
-  <mat-grid-list cols="4" rowHeight="200px">
+  <mat-grid-list cols="4" rowHeight="100px">
     <!--Start of Cards-->
     <mat-grid-tile [colspan]="1" [rowspan]="1">
       <div class="card card-stats">
@@ -22,7 +22,7 @@
               </div>
     </mat-grid-tile>
 
-    <mat-grid-tile [colspan]="1" [rowspan]="1">
+    <mat-grid-tile [colspan]="1" [rowspan]="2">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
@@ -35,7 +35,7 @@
       </mat-card>
     </mat-grid-tile>
 
-    <mat-grid-tile [colspan]="1" [rowspan]="1">
+    <mat-grid-tile [colspan]="1" [rowspan]="2">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
@@ -48,7 +48,7 @@
       </mat-card>
     </mat-grid-tile>
 
-    <mat-grid-tile [colspan]="1" [rowspan]="1">
+    <mat-grid-tile [colspan]="1" [rowspan]="2">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
@@ -63,9 +63,9 @@
 
     <!--END OF CARDS-->
     
-    <mat-grid-tile [colspan]="2" [rowspan]="7">
+    <mat-grid-tile [colspan]="2" [rowspan]="15">
       <mat-card class="dashboard-card">
-        <mat-card-header>
+        <mat-card-header id =tableHeader class="cardHeader">
           <mat-card-title>
             <ng-container *ngIf="currentMonth$ | async | date:'MMMM' as cm ; else elseTemplate">
                 <h1>Time-Table of {{cm}}</h1>
@@ -102,9 +102,9 @@
       </mat-card>
     </mat-grid-tile>
 
-    <mat-grid-tile [colspan]="2" [rowspan]="3">
+    <mat-grid-tile [colspan]="2" [rowspan]="4">
       <mat-card class="dashboard-card">
-        <mat-card-header>
+        <mat-card-header class="cardHeader" id="statisticsHeader">
           <mat-card-title>
             <ng-container *ngIf="currentMonth$ | async | date:'MMMM' as cm ; else elseTemplate">
                 <h1>{{cm}}'s Statistics</h1>
@@ -126,6 +126,5 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-
   </mat-grid-list>
 </div>

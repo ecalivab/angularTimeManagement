@@ -19,3 +19,45 @@
 .dashboard-card-content {
   text-align: center;
 }
+
+$orange-400: #ffa726 !default;
+$orange-500: #ff9800 !default;
+$orange-600: #fb8c00 !default;
+$purple-400: #ab47bc !default;
+$purple-500: #9c27b0 !default;
+$purple-600: #8e24aa !default;
+
+$bmd-shadow-umbra-opacity: 0.2 !default;
+$bmd-shadow-penumbra-opacity: 0.14 !default;
+$bmd-shadow-ambient-opacity: 0.12 !default;
+
+$bmd-shadow-2dp: 0 2px 2px 0 rgba(#000, $bmd-shadow-penumbra-opacity), 0 3px 1px -2px rgba(#000, $bmd-shadow-umbra-opacity), 0 1px 5px 0 rgba(#000, $bmd-shadow-ambient-opacity);
+
+
+.cardHeader {
+  padding:5px !important;
+  z-index: 3 !important;
+  border-radius: 8px;
+  padding: 15px!important;
+  margin: 0 20px 0 20px;
+  position: relative;
+  bottom: 35px;
+  box-shadow: $bmd-shadow-2dp;
+}
+
+#tableHeader{
+   background: linear-gradient(60deg, $orange-400, $orange-600)!important;
+}
+
+#statisticsHeader{
+background: linear-gradient(60deg, $purple-400, $purple-600);
+}
+
+ .mat-card{
+  padding:0 !important;
+  margin: 27px 0 0 0;
+}
+
+.mat-card-content{
+  padding:5px !important;
+}
