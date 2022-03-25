@@ -24,6 +24,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { StatisticsComponent } from './statistics/statistics.component';
 
+import { SanitizeHtmlPipe } from './sanatize_html';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +33,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
     DashboardComponent,
     TimeTableComponent,
     StatisticsComponent,
+    SanitizeHtmlPipe,
   ],
   imports: [
     BrowserModule,

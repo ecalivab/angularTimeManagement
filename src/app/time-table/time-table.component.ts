@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-time-table',
   templateUrl: './time-table.component.html',
-  styleUrls: ['./time-table.component.css']
+  styleUrls: ['./time-table.component.scss']
 })
 
 export class TimeTableComponent {
@@ -16,13 +16,6 @@ export class TimeTableComponent {
   selection:any; //*Array to get save the rows of Holidays selected.
   displayedColumns:string[] = [];
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
-
-  //-------- Test of an Observable Strong ---------
-  hello: string = "";
-  inputChanged($event:string){
-    this.dateTimeService.updateText($event);
-  }
-  //--------------End of Test ----------------------
 
   constructor(
     private dateTimeService: DateTimeService,
