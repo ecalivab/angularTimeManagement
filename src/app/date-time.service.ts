@@ -15,7 +15,29 @@ export interface TimeTableItem {
   providedIn: 'root'
 })
 
+
 export class DateTimeService {
+  
+  //------Holidays--------------
+  Holidays = 
+  [
+    new Date(2022,0,1),
+    new Date(2022,0,6),
+    new Date(2022,3,17),
+    new Date(2022,3,18),
+    new Date(2022,3,25),
+    new Date(2022,4,1),
+    new Date(2022,5,2),
+    new Date(2022,7,15),
+    new Date(2022,10,1),
+    new Date(2022,11),
+    new Date(2022,11),
+    new Date(2022,11),
+    new Date(2022,11),
+    new Date(2022,2,1),
+  ]
+
+  gHolidays:Date[] = [];
 
   //-------- Test of an Observable Strong ---------
   private _text: BehaviorSubject<string> = new BehaviorSubject('');
@@ -96,6 +118,40 @@ export class DateTimeService {
     return {month, year};
   }
 
+  getRemaindingWorkDays() :number {
+    let counter = 0;
+    let dateObj = new Date();
+    let currMonth = dateObj.getMonth(); 
+    while (dateObj.getMonth() === currMonth) {
+     
+      if(dateObj.getDay() !== 0 && dateObj.getDay() !== 6) {
+        counter +=1;
+      }
+      dateObj.setDate(dateObj.getDate() + 1);
+    }
+    return counter;
+  }
+
+  getCurrentMonthTotalWorkDays():number {
+    let counter = 0;
+    let dateObj = new Date();
+    let currMonth = dateObj.getMonth();
+    let currYear =  dateObj.getFullYear();
+    let date = new Date(currYear, currMonth, 1);
+    while (date.getMonth() === currMonth) {
+
+      if(date.getDay() !== 0 && date.getDay() !== 6) {
+        counter +=1;
+      }
+      if(this.Holidays.find((x => x.toISOString() === date.toISOString()))) {
+         this.gHolidays.push(date);
+      }
+      date.setDate(date.getDate() + 1);
+    }
+
+    return counter;
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
@@ -127,7 +183,7 @@ export class DateTimeService {
     return this.MonthlyTable$.pipe(map(result => result.length));
   }
 
-  getCurrentMonth():Observable<Date>{
+  getMonthInTable():Observable<Date>{
     return this.MonthlyTable$.pipe(map(res => res.length> 0 ? res[0].Date : new Date()), //Add a Control because when I clear the array it cannot read the property Date and fail.
       catchError(this.handleError<any>('new Date()'))
     );

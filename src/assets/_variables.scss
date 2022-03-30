@@ -305,6 +305,26 @@ $blue-grey: $blue-grey-500 !default;
 $white: #fff;
 $black: #000;
 
+
+
+$font-size-base:             1rem !default;
+//$font-size-lg:               1.25rem !default;
+//$font-size-sm:               .875rem !default;
+//$font-size-xs:               .75rem !default;
+//
+
+$font-size-h1:                 3.3125rem;
+$font-size-h2:                 2.25rem !default;
+$font-size-h3:                 1.5625rem;
+$font-size-h4:                 1.125rem !default;
+$font-size-h5:                 1.0625rem !default;
+$font-size-h6:                 0.75rem !default;
+$font-paragraph:               14px !default;
+$font-size-navbar:             16px !default;
+$font-size-small:              12px !default;
+
+
+
 $bmd-shadow-umbra-opacity: 0.2 !default;
 $bmd-shadow-penumbra-opacity: 0.14 !default;
 $bmd-shadow-ambient-opacity: 0.12 !default;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { DateTimeService,TimeTableItem} from '../date-time.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CARDS } from './card-content';
 
 
@@ -13,12 +14,18 @@ import { CARDS } from './card-content';
 
 export class DashboardComponent implements OnInit{
 
-  constructor(private dateTimeService: DateTimeService) {}
+  constructor(private dateTimeService: DateTimeService, 
+    private breakpointObserver: BreakpointObserver) {}
 
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
-  currentMonth$: Observable<Date> = new Observable<Date>();
+  monthInTable$: Observable<Date> = new Observable<Date>();
 
   cards = CARDS;
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Medium)
+    .pipe(
+      map(result => result.matches),
+      shareReplay()
+    );
 
   //-------- Test of an Observable Strong ---------
   hello: string = "";
@@ -31,7 +38,7 @@ export class DashboardComponent implements OnInit{
   ngOnInit(): void {
     //*We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
     this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
-    this.currentMonth$ = this.dateTimeService.getCurrentMonth();
+    this.monthInTable$ = this.dateTimeService.getMonthInTable();
   }
 
 }
