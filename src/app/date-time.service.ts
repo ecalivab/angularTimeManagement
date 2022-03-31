@@ -11,6 +11,12 @@ export interface TimeTableItem {
   Ufficio: boolean;
 }
 
+export interface Holiday {
+  Name:String;
+  Date:Date;
+  Weekend: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,25 +25,24 @@ export interface TimeTableItem {
 export class DateTimeService {
   
   //------Holidays--------------
-  Holidays = 
+  Holidays: Holiday [] = 
   [
-    new Date(2022,0,1),
-    new Date(2022,0,6),
-    new Date(2022,3,17),
-    new Date(2022,3,18),
-    new Date(2022,3,25),
-    new Date(2022,4,1),
-    new Date(2022,5,2),
-    new Date(2022,7,15),
-    new Date(2022,10,1),
-    new Date(2022,11),
-    new Date(2022,11),
-    new Date(2022,11),
-    new Date(2022,11),
-    new Date(2022,2,1),
+    {Name: "Dopo Capodanno", Date: new Date(2022,0,1), Weekend: true},
+    {Name: "Epifania", Date: new Date(2022,0,6), Weekend: false},
+    {Name: "Pasqua", Date: new Date(2022,3,17), Weekend: true},
+    {Name: "Pasquetta", Date: new Date(2022,3,18), Weekend: false},
+    {Name: "Anniversarop della Liberzaione d'Italia", Date: new Date(2022,3,25),Weekend: false},
+    {Name: "Festa dei Lavoratori", Date: new Date(2022,4,1), Weekend: true},
+    {Name: "Festa della Repubblica Italiana", Date: new Date(2022,5,2),Weekend: false},
+    {Name: "Ferragosto", Date: new Date(2022,7,15),Weekend: false},
+    {Name: "Tutti i Santi", Date: new Date(2022,10,1),Weekend: false},
+    {Name: "Sant'Ambrogio", Date: new Date(2022,11,7),Weekend: false},
+    {Name: "L'Immacolata Concezione", Date: new Date(2022,11,8),Weekend: false},
+    {Name: "Natale", Date: new Date(2022,11,25), Weekend: true},
+    {Name: "Santo Stefano", Date: new Date(2022,11,26),Weekend: false},
   ]
 
-  gHolidays:Date[] = [];
+  gHolidays:Holiday[] = [];
 
   //-------- Test of an Observable Strong ---------
   private _text: BehaviorSubject<string> = new BehaviorSubject('');
@@ -143,8 +148,9 @@ export class DateTimeService {
       if(date.getDay() !== 0 && date.getDay() !== 6) {
         counter +=1;
       }
-      if(this.Holidays.find((x => x.toISOString() === date.toISOString()))) {
-         this.gHolidays.push(date);
+      let index = this.Holidays.findIndex((x => x.Date.toISOString() === date.toISOString()));
+      if(index > 0) {
+         this.gHolidays.push(this.Holidays[index]);
       }
       date.setDate(date.getDate() + 1);
     }

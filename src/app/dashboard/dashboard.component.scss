@@ -33,6 +33,10 @@
   box-shadow: $bmd-shadow-2dp;
 }
 
+.cursor {
+    cursor: pointer;
+}
+
 #tableTile{
   .cardHeader{
     background: linear-gradient(60deg, $pink-400, $pink-600)!important;

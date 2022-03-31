@@ -23,8 +23,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { SanitizeHtmlPipe } from './sanatize_html';
+import { DialogHolidyaContent } from './dashboard/dashboard.component';
+import { DialogVideoContent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,8 @@ import { SanitizeHtmlPipe } from './sanatize_html';
     TimeTableComponent,
     StatisticsComponent,
     SanitizeHtmlPipe,
+    DialogHolidyaContent,
+    DialogVideoContent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +59,7 @@ import { SanitizeHtmlPipe } from './sanatize_html';
     MatCheckboxModule,
     MatInputModule,
     FormsModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
