@@ -21,13 +21,11 @@ export class DashboardComponent implements OnInit{
     public dialogVideo: MatDialog, 
     public sanitizer:DomSanitizer,) {
       this.dateTimeService.getCurrentMonthTotalWorkDays();
-      this.url = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/watch?v=o-YBDTqX_ZU&ab_channel=MusRest');
     }
 
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
   monthInTable$: Observable<Date> = new Observable<Date>();
   readonly cards = CARDS;
-  url:SafeResourceUrl;
 
   isMedium$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Medium)
     .pipe(
@@ -61,7 +59,7 @@ export class DashboardComponent implements OnInit{
   openVideoDialog(){
     const dialogRef = this.dialogHoliday.open(DialogVideoContent, {
       data: {
-        URL: this.url
+        URL: this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')
       }
     
     });
