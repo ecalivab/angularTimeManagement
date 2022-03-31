@@ -4,7 +4,6 @@ import { DateTimeService,TimeTableItem , Holiday} from '../date-time.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CARDS } from './card-content';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,8 +17,7 @@ export class DashboardComponent implements OnInit{
   constructor(private dateTimeService: DateTimeService, 
     private breakpointObserver: BreakpointObserver,
     public dialogHoliday: MatDialog, 
-    public dialogVideo: MatDialog, 
-    public sanitizer:DomSanitizer,) {
+    public dialogVideo: MatDialog,) {
       this.dateTimeService.getCurrentMonthTotalWorkDays();
     }
 
@@ -37,7 +35,7 @@ export class DashboardComponent implements OnInit{
   hello: string = "";
   inputChanged($event:string){
     this.dateTimeService.updateText($event);
-    if($event == 'Ciao Capozzi'){
+    if($event.toLocaleLowerCase() == 'ciao capozzi'){
       this.openVideoDialog();
     }
   }
@@ -59,7 +57,7 @@ export class DashboardComponent implements OnInit{
   openVideoDialog(){
     const dialogRef = this.dialogHoliday.open(DialogVideoContent, {
       data: {
-        URL: this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')
+        URL: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1'
       }
     
     });

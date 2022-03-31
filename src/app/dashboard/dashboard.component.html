@@ -9,7 +9,7 @@
           </div>
         <mat-card-content class="dashboard-card-content">
           <mat-card-title style="font-size:1.2vw;">{{card.Title}}</mat-card-title>
-          <div class="mt-3 cursor cardNumber position-absolute start-50 top-50" (click)="cardFunction(card.FuncNumber);"  [innerHTML]="card.Content | sanitizeHtml"></div>
+          <div class="mt-3 cursor cardNumber position-absolute start-50 top-50" (click)="cardFunction(card.FuncNumber);"  [innerHTML]="card.Content | sanitize:'html'"></div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile> 
