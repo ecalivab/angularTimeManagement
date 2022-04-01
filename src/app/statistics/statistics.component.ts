@@ -20,9 +20,9 @@ export class StatisticsComponent implements OnInit {
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
   workingHours$: Observable<number> = new Observable<number>();
   workingDays$: Observable<number>  = new Observable<number>();
-  holidays$: Observable<number>     =  new Observable<number>();
+  holidays$: Observable<number>     = new Observable<number>();
   officeDays$: Observable<number>   = new Observable<number>();
- 
+  rolHours$: Observable<number>     = new Observable<number>();
   //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
   //officeDays:number = 0;
   //testEmitter$ = new BehaviorSubject<number>(this.officeDays);
@@ -44,6 +44,7 @@ export class StatisticsComponent implements OnInit {
     this.workingDays$  = this.dateTimeService.getWorkingDays();
     this.holidays$     = this.dateTimeService.getHolidays();
     this.officeDays$   = this.dateTimeService.getOfficeDays();
+    this.rolHours$     = this.dateTimeService.getTotalRolHours();
 
     //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
     // this.monthlyTable.subscribe(result => {

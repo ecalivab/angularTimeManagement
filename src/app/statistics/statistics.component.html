@@ -2,6 +2,7 @@
     <p class="fs-5" *ngIf="workingHours$ | async as  wh"> Total Working Hours: {{wh}} </p>
     <p class="fs-5" *ngIf="workingDays$  | async as  wd">Total Working Days: {{wd}} </p>
     <p class="fs-5" *ngIf="officeDays$   | async as  of">Totals Days in office: {{of}} </p>
+    <p class="fs-5" *ngIf="rolHours$     | async as  rh">Totals Rol Hours: {{rh}} </p>
     <ng-container *ngIf="holidays$ |async as hd; else elseTemplate">
         <p class="fs-5">Total Holidays: {{hd}}</p>
     </ng-container>

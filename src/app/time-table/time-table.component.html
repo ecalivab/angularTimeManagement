@@ -9,13 +9,13 @@
     <!-- Ore Column -->
     <ng-container matColumnDef="Ore">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Hours</th>
-      <td mat-cell *matCellDef="let row"><input matInput type="number" max="20" min="1" value="{{row.Ferie ? 0 : row.Ore}}" [disabled]="row.Ferie" [(ngModel)]="row.Ore" (ngModelChange)="updateTable(dataSource._data.value)"></td>
+      <td mat-cell *matCellDef="let row"><input matInput type="number" max="20" min="1" value="{{row.Ferie ? 0 : (row.Ore - row.Rol)}}" [disabled]="row.Ferie" [(ngModel)]="row.Ore" (ngModelChange)="updateTable(dataSource._data.value)"></td>
     </ng-container>
      
     <!-- Rol Column -->
     <ng-container matColumnDef="Rol">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Rol</th>
-      <td mat-cell *matCellDef="let row"><input type="number" matInput max="20" min="1" value="{{row.Ferie ? 0 : row.Rol}}" [disabled]="row.Ferie" [(ngModel)]="row.Rol" (ngModelChange)="updateTable(dataSource._data.value)"></td>
+      <td mat-cell *matCellDef="let row"><input type="number" matInput max="20" min="0" value="{{row.Ferie ? 0 : row.Rol}}" [disabled]="row.Ferie" [(ngModel)]="row.Rol" (ngModelChange)="updateTable(dataSource._data.value)"></td>
     </ng-container>
 
     <!-- Ferie Column -->
