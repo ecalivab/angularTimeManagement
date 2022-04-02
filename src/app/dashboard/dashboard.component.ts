@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
 import { DateTimeService,TimeTableItem , Holiday} from '../date-time.service';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { CARDS } from './card-content';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -23,6 +23,10 @@ export class DashboardComponent implements OnInit{
 
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
   monthInTable$: Observable<Date> = new Observable<Date>();
+
+  columns:number = 4;
+  componentCols:number = 2;
+
   readonly cards = CARDS;
 
   isMedium$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Medium)
@@ -80,9 +84,31 @@ export class DashboardComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    //*We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
+    //*We get hold of the monthlyTable$ observable. We are not doing anyting with it But you can subscribe to it to get the latest list of Todo items.
     this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
     this.monthInTable$ = this.dateTimeService.getMonthInTable();
+
+    //*Layout resize by breakpoint size (Medium-Handset)
+    this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.Medium, Breakpoints.XSmall, Breakpoints.Large, Breakpoints.XLarge]).subscribe((state: BreakpointState) => {
+      if (state.breakpoints[Breakpoints.Medium]) {
+        this.componentCols = 1;
+        this.columns = 2;
+      }
+      if(state.breakpoints[Breakpoints.XSmall] || state.breakpoints[Breakpoints.Small]) {
+        this.componentCols = 1;
+        this.columns = 1;
+      }
+      if(state.breakpoints[Breakpoints.Large]) {
+        this.componentCols = 2;
+        this.columns = 4;
+      }
+
+      if(state.breakpoints[Breakpoints.XLarge]) {
+        this.componentCols = 2;
+        this.columns = 4;
+      }
+      shareReplay();
+    })
   }
 }
 
