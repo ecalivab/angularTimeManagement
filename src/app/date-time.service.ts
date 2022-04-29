@@ -63,6 +63,10 @@ export class DateTimeService {
 
   constructor() { }
 
+  isHoliday(itemDate: Date): Boolean {
+    return this.Holidays.some(h => h.Date.getTime() == itemDate.getTime())
+  }
+
   createTable (month:number, year:number):void {
     var date = new Date(year, month, 1);
     while (date.getMonth() === month) {
@@ -75,6 +79,7 @@ export class DateTimeService {
       }
 
       if(item.Date.getDay() !== 0 && item.Date.getDay() !== 6) {
+         if(!this.isHoliday(item.Date))
         this.MonthlyTable.push(item);
       }
       date.setDate(date.getDate() + 1);
@@ -82,6 +87,7 @@ export class DateTimeService {
     this._MonthlyTable.next(Object.assign([], this.MonthlyTable));
     return;
   }
+
 
   clear(){
     this.MonthlyTable = [];
@@ -146,8 +152,11 @@ export class DateTimeService {
     while (date.getMonth() === currMonth) {
 
       if(date.getDay() !== 0 && date.getDay() !== 6) {
-        counter +=1;
+         if(!this.isHoliday(date)){ //* Need to exclude Weeday Holidays from the count
+           counter +=1;
+         }        
       }
+      //* This Set the Number of Holidays in the Month!
       let index = this.Holidays.findIndex((x => x.Date.toISOString() === date.toISOString()));
       if(index > 0) {
          this.gHolidays.push(this.Holidays[index]);
@@ -168,7 +177,7 @@ export class DateTimeService {
       return of(result as T);
     };
  }
-
+  //* OBSERVABLE SECCION FOR STATISTICS
   getTotalHours():Observable<number> {
     return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Ore, 0)));
   }
@@ -198,4 +207,23 @@ export class DateTimeService {
       catchError(this.handleError<any>('new Date()'))
     );
   }
+  
+  //* SECTION FOR XLS return normal values
+
+  getNormalWorkingDays():number{
+    return this.MonthlyTable.filter(item=> item.Ferie === false).length;
+  }
+
+  getNormalHolidays(): number {
+    return this.MonthlyTable.filter(item => item.Ferie === true).length;
+  }
+  
+  getNormalOfficeDays():number {
+    return this.MonthlyTable.filter(item => item.Ferie === false && item.Ufficio === true).length;
+  }
+
+  getNormalTotalRolHours(): number {
+    return this.MonthlyTable.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Rol, 0);
+  }
+
 }

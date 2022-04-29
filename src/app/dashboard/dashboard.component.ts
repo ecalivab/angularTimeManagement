@@ -47,7 +47,7 @@ export class DashboardComponent implements OnInit{
 
   //-------------Dialogs---------------------------
   openHolidayDialog() {
-    const dialogRef = this.dialogHoliday.open(DialogHolidyaContent, {
+    const dialogRef = this.dialogHoliday.open(DialogHolidayContent, {
       data: { 
         days: this.dateTimeService.gHolidays
       },
@@ -116,7 +116,7 @@ export class DashboardComponent implements OnInit{
   selector: 'dialog-holiday',
   templateUrl: 'dialogs/dialog-holiday.html',
 })
-export class DialogHolidyaContent {
+export class DialogHolidayContent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 }
 

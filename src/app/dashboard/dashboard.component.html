@@ -1,6 +1,5 @@
 <div class="grid-container">
   <h1 class="mat-h1"></h1>
-  <h1>{{columns}}</h1>
   <!-- <mat-grid-list [cols]="(isMedium$ | async) ? '2' : '4' " rowHeight="100px"> -->
   <mat-grid-list [cols]="columns" rowHeight="100px">
     <!--Start of Cards-->
@@ -59,6 +58,7 @@
             <button mat-raised-button class="me-2" color="primary" (click)="dateTable.saveTable()">Save</button>
             <!--Bind Child Function with Parent using a local variable-->
             <button mat-raised-button color="warn" (click)="dateTable.clearTable()">Clear</button>
+            <button mat-raised-button class="ms-2" color="accent" (click)="dateTable.openExportDialog()">Export Table</button>
           </div>
         </mat-card-content>
       </mat-card>

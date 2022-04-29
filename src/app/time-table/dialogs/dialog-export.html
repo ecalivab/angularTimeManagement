@@ -1,0 +1,10 @@
+<h1 mat-dialog-title><strong>Export</strong></h1>
+<mat-dialog-content class="mat-typography">
+  <div class="container mt-2">
+    <span>Insert Your Name:</span><input matInput type='text' placeholder='' [(ngModel)]="data.name">
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button color="primary" [mat-dialog-close]="data.name" cdkFocusInitial>Export</button>
+  <button mat-button mat-dialog-close (click)="onNoClick()">Cancel</button>
+</mat-dialog-actions>

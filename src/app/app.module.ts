@@ -26,8 +26,9 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { SanitizeHtmlPipe } from './sanatize_html';
-import { DialogHolidyaContent } from './dashboard/dashboard.component';
+import { DialogHolidayContent } from './dashboard/dashboard.component';
 import { DialogVideoContent } from './dashboard/dashboard.component';
+import { DialogExportContent } from './time-table/time-table.component';
 
 @NgModule({
   declarations: [
@@ -37,8 +38,9 @@ import { DialogVideoContent } from './dashboard/dashboard.component';
     TimeTableComponent,
     StatisticsComponent,
     SanitizeHtmlPipe,
-    DialogHolidyaContent,
+    DialogHolidayContent,
     DialogVideoContent,
+    DialogExportContent,
   ],
   imports: [
     BrowserModule,
