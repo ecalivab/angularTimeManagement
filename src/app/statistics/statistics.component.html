@@ -1,15 +1,110 @@
 <div class="container">
-    <p class="fs-5" *ngIf="workingHours$ | async as  wh"> Total Working Hours: {{wh}} </p>
-    <p class="fs-5" *ngIf="workingDays$  | async as  wd">Total Working Days: {{wd}} </p>
-    <p class="fs-5" *ngIf="officeDays$   | async as  of">Totals Days in office: {{of}} </p>
-    <p class="fs-5" *ngIf="rolHours$     | async as  rh">Totals Rol Hours: {{rh}} </p>
-    <ng-container *ngIf="holidays$ |async as hd; else elseTemplate">
-        <p class="fs-5">Total Holidays: {{hd}}</p>
-    </ng-container>
-    <ng-template #elseTemplate>
-        <p class="fs-5">Total Holidays: 0</p>
-    </ng-template>
+    <p class="fs-5" *ngIf="rolHours$ | async as  rh">Totals Rol Hours: {{rh}} </p>
+      
+    <div class="row py-2">
+        <div class="col-lg-6 col-sm-12 col-md-12">
+             <p class="fs-5" *ngIf="workingHours$ | async as  wh"> Total Working Hours: <span class="color-teal fw-bold">{{wh}}</span></p>
+            <circle-progress *ngIf="totalHourPercentage$ | async as thp"
+                [percent]="thp"
+                [animation]="true"
+                [animationDuration]="300"
+                [startFromZero]="true"
+                [showInnerStroke]="true"
+                [titleFontSize]="'28'"
+                [titleFontWeight]="'900'"
+                [unitsFontSize]="'28'"
+                [unitsFontWeight]="'900'"
+                [subtitle]="'Total Working Hours'"
+                [subtitleFontSize]="'12'"
+                [lazy]="false"
+            ></circle-progress>
+        </div>
+
+        <div class="col-lg-6 col-sm-12 col-md-12">
+             <p class="fs-5" *ngIf="workingDays$  | async as  wd">Total Working Days: <span class="color-green fw-bold">{{wd}}</span></p>
+            <circle-progress *ngIf="totalWorkingDaysPercentage$ | async as twdp"
+                [percent]="twdp"
+                [animation]="true"
+                [animationDuration]="300"
+                [startFromZero]="true"
+                [showInnerStroke]="true"
+                [titleFontSize]="'28'"
+                [titleFontWeight]="'900'"
+                [unitsFontSize]="'28'"
+                [unitsFontWeight]="'900'"
+                [subtitle]="'Total Working Days'"
+                [subtitleFontSize]="'12'"
+                [lazy]="false"
+                [backgroundColor]="'#558b2f'"
+                [innerStrokeColor] = "'#558b2f'"
+            ></circle-progress>
+        </div>
+    </div>
+                     
+    <div class="row py-2">
+        <div class="col-lg-6 col-sm-12 col-md-12">
+            <p class="fs-5" *ngIf="officeDays$ | async as  of">Totals Days in office: <span class="color-red fw-bold">{{of}}</span> </p>
+            <circle-progress *ngIf="totalOfficeDaysPercentage$ | async as todp"
+                [percent]="todp"
+                [animation]="true"
+                [animationDuration]="300"
+                [startFromZero]="true"
+                [showInnerStroke]="true"
+                [titleFontSize]="'28'"
+                [titleFontWeight]="'900'"
+                [unitsFontSize]="'28'"
+                [unitsFontWeight]="'900'"
+                [subtitle]="'Total Office Days'"
+                [subtitleFontSize]="'12'"
+                [lazy]="false"
+                [backgroundColor]="'#c62828'"
+                [innerStrokeColor] = "'#c62828'"
+            ></circle-progress>
+        </div>
+
+        <div class="col-lg-6 col-sm-12 col-md-12">
+            <ng-container *ngIf="holidays$ |async as hd; else elseTemplate">
+                <p class="fs-5">Total Holidays: <span class="color-blue fw-bold">{{hd}}</span></p>
+                <circle-progress *ngIf="totalHolidaysPercentage$ | async as thp"
+                    [percent]="thp"
+                    [animation]="true"
+                    [animationDuration]="300"
+                    [startFromZero]="true"
+                    [showInnerStroke]="true"
+                    [titleFontSize]="'28'"
+                    [titleFontWeight]="'900'"
+                    [unitsFontSize]="'28'"
+                    [unitsFontWeight]="'900'"
+                    [subtitle]="'Total Holidays Days'"
+                    [subtitleFontSize]="'12'"
+                    [lazy]="false"
+                    [backgroundColor]="'#1565c0'"
+                    [innerStrokeColor] = "'#1565c0'"
+                ></circle-progress> 
+            </ng-container>
+            <ng-template #elseTemplate>
+                <p class="fs-5">Total Holidays: <span class="color-blue fw-bold">0</span></p>
+                <circle-progress 
+                    [percent]="0"
+                    [animation]="true"
+                    [animationDuration]="300"
+                    [startFromZero]="true"
+                    [showInnerStroke]="true"
+                    [titleFontSize]="'28'"
+                    [titleFontWeight]="'900'"
+                    [unitsFontSize]="'28'"
+                    [unitsFontWeight]="'900'"
+                    [subtitle]="'Total Holidays Days'"
+                    [subtitleFontSize]="'12'"
+                    [lazy]="false"
+                    [backgroundColor]="'#1565c0'"
+                    [innerStrokeColor] = "'#1565c0'"
+            ></circle-progress>
+            </ng-template>       
+        </div>
+    </div>
 </div>
+
 <!-- Another Way To Do It
 <ng-container>
     <p class="fs-5" *ngIf="testEmitter$ | async as  of2">{{of2}}</p>

@@ -29,6 +29,7 @@ import { SanitizeHtmlPipe } from './sanatize_html';
 import { DialogHolidayContent } from './dashboard/dashboard.component';
 import { DialogVideoContent } from './dashboard/dashboard.component';
 import { DialogExportContent } from './time-table/time-table.component';
+import { NgCircleProgressModule } from 'ng-circle-progress';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,21 @@ import { DialogExportContent } from './time-table/time-table.component';
     MatInputModule,
     FormsModule,
     MatDialogModule,
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      backgroundColor: "teal",
+      backgroundPadding: 8,
+      radius: 60,
+      space: -15,
+      maxPercent: 100,
+      unitsColor: "#ffffff",
+      outerStrokeWidth: 7.5,
+      outerStrokeColor: "white",
+      innerStrokeColor: "teal",
+      innerStrokeWidth: 3,
+      titleColor: "#ffffff",
+      subtitleColor: "#ffffff"
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

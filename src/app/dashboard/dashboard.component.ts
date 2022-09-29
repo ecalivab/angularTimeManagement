@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { DateTimeService,TimeTableItem , Holiday} from '../date-time.service';
+import { DateTimeService,TimeTableItem } from '../date-time.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { CARDS } from './card-content';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
