@@ -2,3 +2,20 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.centered-container {
+    width: 400px;
+    max-width: 400px;
+    min-width: 100px;
+    height: 200px;
+    position: absolute;
+    margin-top: -200px;
+    margin-left: -200px;
+    top: 50%;
+    left: 50%;  
+}
+
+.shadow-realm {
+    -webkit-box-shadow: 17px -3px 25px -2px rgba(0,0,0,0.36); 
+    box-shadow: 17px -3px 25px -2px rgba(0,0,0,0.36);
+}
