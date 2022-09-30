@@ -11,7 +11,7 @@
     <mat-nav-list>
       <mat-list-item *ngFor="let item of menuItems" class="with-icon padded">
         <mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
-        <h4 mat-line [hidden]="collapse">{{ item.name }}</h4>
+        <h4 [routerLink]='item.route' mat-line [hidden]="collapse">{{ item.name }}</h4>
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
@@ -27,6 +27,16 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>Semantyca</span>
+
+      <div class="dropdown right-side">
+        <mat-icon class="me-1" mat-list-icon>person</mat-icon>
+        <span class="dropdown-toggle" type="button" id="logInForm" data-bs-toggle="dropdown" aria-expanded="false">
+          Log-In/Sign-Up
+        </span>
+        <ul class="dropdown-menu shadow-realm" aria-labelledby="logInForm">
+          <app-log-in></app-log-in>
+          </ul>
+      </div>   
     </mat-toolbar>
     <app-dashboard></app-dashboard>
   </mat-sidenav-content>

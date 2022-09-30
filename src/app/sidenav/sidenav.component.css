@@ -19,3 +19,9 @@
 #SideNavButton {
   margin: 10px;
 }
+
+.right-side {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}

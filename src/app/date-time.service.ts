@@ -54,11 +54,11 @@ export class DateTimeService {
   }
   //--------------End of Test ----------------------
 
-  //*Here, we create BehaviorSubject of type TimeTableItem[]. Behavior expects us to provide an initial value. We assign an empty array. The BehaviorSubject will always emit the latest list of TimeTableItem items as an array.
+  //* Here, we create BehaviorSubject of type TimeTableItem[]. Behavior expects us to provide an initial value. We assign an empty array. The BehaviorSubject will always emit the latest list of TimeTableItem items as an array.
   private readonly _MonthlyTable:BehaviorSubject<any> = new BehaviorSubject([]);
-  //*Also, it is advisable not to expose the BehaviorSubject outside the service. Hence we convert it to normal Observable and return it. This is because the methods like next, complete or error do not exist on normal observable.
+  //* Also, it is advisable not to expose the BehaviorSubject outside the service. Hence we convert it to normal Observable and return it. This is because the methods like next, complete or error do not exist on normal observable.
   MonthlyTable$: Observable<TimeTableItem[]> = this._MonthlyTable.asObservable();
-  //*The MonthlyTable will store the todo items in memory.
+  //* The MonthlyTable will store the todo items in memory.
   private MonthlyTable:TimeTableItem[] = [];
 
   constructor() { }

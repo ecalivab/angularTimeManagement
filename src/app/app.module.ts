@@ -21,7 +21,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { MatDialogModule } from '@angular/material/dialog';
 
@@ -30,6 +30,8 @@ import { DialogHolidayContent } from './dashboard/dashboard.component';
 import { DialogVideoContent } from './dashboard/dashboard.component';
 import { DialogExportContent } from './time-table/time-table.component';
 import { NgCircleProgressModule } from 'ng-circle-progress';
+import { LogInComponent } from './log-in/log-in.component';
+import { RegistrationComponent } from './log-in/registration/registration.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     DialogHolidayContent,
     DialogVideoContent,
     DialogExportContent,
+    LogInComponent,
+    RegistrationComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +67,7 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     MatInputModule,
     FormsModule,
     MatDialogModule,
+    ReactiveFormsModule,
     NgCircleProgressModule.forRoot({
       // set defaults here
       backgroundColor: "teal",

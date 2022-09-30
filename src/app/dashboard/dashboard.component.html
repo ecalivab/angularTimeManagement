@@ -23,7 +23,8 @@
         <mat-card-content class="dashboard-card-content">
           <mat-card-title>Surprise!</mat-card-title>
           <div class="mt-3">
-            <input matInput type='text' [(ngModel)]='hello' (ngModelChange)='inputChanged($event)' placeholder='Saluta a Capozzi!' name='hello'>
+            <!-- <input matInput type='text' [(ngModel)]='hello' (ngModelChange)='inputChanged($event)' placeholder='Saluta a Capozzi!' name='hello'> -->
+            <input #surpriseBox matInput type='text' id="search-box" (input)="inputChangedSimplified(surpriseBox.value)" placeholder='Saluta a Capozzi!' />
           </div>
         </mat-card-content>
       </mat-card>

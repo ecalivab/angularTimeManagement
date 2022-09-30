@@ -35,11 +35,18 @@ export class DashboardComponent implements OnInit{
       shareReplay()
     );
 
-  //-------- Test of an Observable Strong ---------
+  // -------- Test of an Observable Strong ---------
   hello: string = "";
   inputChanged($event:string){
     this.dateTimeService.updateText($event);
     if($event.toLocaleLowerCase() == 'ciao capozzi'){
+      this.openVideoDialog();
+    }
+  }
+
+  inputChangedSimplified(letter: string) {
+    this.dateTimeService.updateText(letter);
+    if(letter.toLocaleLowerCase() == 'ciao capozzi'){
       this.openVideoDialog();
     }
   }

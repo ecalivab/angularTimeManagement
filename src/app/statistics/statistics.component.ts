@@ -32,22 +32,22 @@ export class StatisticsComponent implements OnInit {
   totalWorkingDaysPercentage$: Observable<number> = new Observable<number>();
   totalOfficeDaysPercentage$: Observable<number> = new Observable<number>();
   totalHolidaysPercentage$: Observable<number> = new Observable<number>();
-  //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
-  //officeDays:number = 0;
-  //testEmitter$ = new BehaviorSubject<number>(this.officeDays);
-  //--------------------------------------------------------------------------------------------
+  // -------------------------ANOTHER WAY TO DO IT-----------------------------------------------
+  // officeDays:number = 0;
+  // testEmitter$ = new BehaviorSubject<number>(this.officeDays);
+  // --------------------------------------------------------------------------------------------
 
   ngOnInit(): void {
-    //-----------------TEST--------------------
+    // -----------------TEST--------------------
     this.text = this.dateTimeService.text$;
 
     this.text.subscribe(str =>{
       this.helloString = str;
       this.testEmitter2$.next(this.helloString);
     })
-    //---------------END TEST-------------------
+    // ---------------END TEST-------------------
 
-    //*We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
+    //* We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
     this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
     this.workingDays$  = this.dateTimeService.getWorkingDays();
     this.holidays$     = this.dateTimeService.getHolidays();
@@ -59,12 +59,12 @@ export class StatisticsComponent implements OnInit {
     this.totalWorkingDaysPercentage$ = this.workingDays$.pipe(map(result => (result/this.totalMonthlyWorkDays)*100));
     this.totalOfficeDaysPercentage$ = this.officeDays$.pipe(map(result => (result/this.totalMonthlyWorkDays)*100));
     this.totalHolidaysPercentage$   = this.holidays$.pipe(map(result => (result/this.totalMonthlyWorkDays)*100));
-    //-------------------------ANOTHER WAY TO DO IT-----------------------------------------------
+    // -------------------------ANOTHER WAY TO DO IT-----------------------------------------------
     // this.monthlyTable.subscribe(result => {
     //   this.officeDays = result.filter(item => item.Ferie === false && item.Ufficio === true).length;
     //   this.testEmitter$.next(this.officeDays);
     // })
-    //---------------------------------------------------------------------------------------------  
+    // ---------------------------------------------------------------------------------------------  
   }
   
 }

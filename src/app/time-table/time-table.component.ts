@@ -89,10 +89,10 @@ export class TimeTableComponent {
     let dataTableMapped = dataTable.map(x => ({
       Risorsa: name,
       Date: x.Date,
-      Ore:  x.Ore,
+      Ore:  x.Ferie ? '' : x.Ore,
       Rol:  x.Rol ? x.Rol: '',
       Ferie: x.Ferie ? '1': '',
-      Ufficio: x.Ufficio ? 1: ''
+      Ufficio: x.Ferie ? '' : x.Ufficio ? 1: '' // If is holiday it should not sum the office hours. First control on holiday, second on Office
     }))
 
     let totRow: any = {
