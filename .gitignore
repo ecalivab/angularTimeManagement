@@ -6,10 +6,17 @@
 /out-tsc
 /bazel-out
 
+#VS
+.vs/time-management-API/
+.vs/time-management-API/*
+/time-management-API/obj/Debug/
+/time-management-API/bin/Debug/*
+
+
 # Node
-/node_modules
-npm-debug.log
-yarn-error.log
+/time-management-UI/node_modules
+/time-management-UI/npm-debug.log
+/time-management-UI/yarn-error.log
 
 # IDEs and editors
 .idea/
@@ -28,15 +35,16 @@ yarn-error.log
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+/time-management-UI/.vscode/*
 
 # Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
+/time-management-UI/.angular/cache
+/time-management-UI/.sass-cache/
+/time-management-UI/connect.lock
+/time-management-UI/coverage
+/time-management-UI/libpeerconnection.log
+/time-management-UI/testem.log
+/time-management-UI/typings
 
 # System files
 .DS_Store

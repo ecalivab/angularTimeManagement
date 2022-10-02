@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +13,7 @@ using time_management_API.Services;
 namespace time_management_API.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowAll")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -35,7 +37,7 @@ namespace time_management_API.Controllers
         [HttpPost("login")]
         public IActionResult Login(AuthenticateRequest request) 
         {
-            AuthenticateResponse response = _userService.Authenticate(request);
+            AuthenticateResponse response = _userService.Authenticate(request); // User Data
             return Ok(response);
             
         }

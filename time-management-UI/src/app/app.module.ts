@@ -33,6 +33,7 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AlertComponent } from './components/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { HttpClientModule } from '@angular/common/http';
     DialogExportContent,
     LogInComponent,
     RegistrationComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,

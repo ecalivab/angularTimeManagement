@@ -11,7 +11,7 @@ import { UserStore } from '../store/user.store';
 export class AuthService {
   readonly url: string = environment.apiURL
    readonly httpOptions: {} = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' })
   }
 
   constructor(
@@ -20,7 +20,7 @@ export class AuthService {
   { }
 
   login(email:string, password:string ): void {
-    this.httpClient.post<any>(`${this.url}/Auth/login`, {email, password}).pipe(
+    this.httpClient.post<User>(`${this.url}/Auth/login`, {email, password}).pipe(
         catchError(this.handleError)
       ).subscribe(
         data => this.userStore.updateUser(data)
