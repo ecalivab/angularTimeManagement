@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { DateTimeService,TimeTableItem } from '../services/date-time.service';
+import { DateTimeService,TimeTableItem } from '../../services/date-time.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { CARDS } from './card-content';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -121,7 +121,7 @@ export class DashboardComponent implements OnInit{
 
 @Component({
   selector: 'dialog-holiday',
-  templateUrl: 'dialogs/dialog-holiday.html',
+  templateUrl: '../../dialogs/dialog-holiday.html',
 })
 export class DialogHolidayContent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
@@ -130,7 +130,7 @@ export class DialogHolidayContent {
 
 @Component({
   selector: 'dialog-video',
-  templateUrl: 'dialogs/dialog-video.html',
+  templateUrl: '../../dialogs/dialog-video.html',
 })
 export class DialogVideoContent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}

@@ -1,4 +1,4 @@
-import { DateTimeService } from '../services/date-time.service';
+import { DateTimeService } from '../../services/date-time.service';
 
 export interface CardContent {
   Title:string;

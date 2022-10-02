@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, map,Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/operators';
-import { DateTimeService, TimeTableItem } from '../services/date-time.service';
+import { DateTimeService, TimeTableItem } from '../../services/date-time.service';
 
 @Component({
   selector: 'app-statistics',

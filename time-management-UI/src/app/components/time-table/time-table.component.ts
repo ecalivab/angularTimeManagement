@@ -1,7 +1,7 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { Component, Inject } from '@angular/core';
-import { DateTimeService, TimeTableItem } from '../services/date-time.service';
+import { DateTimeService, TimeTableItem } from '../../services/date-time.service';
 import { Observable } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
@@ -14,8 +14,8 @@ import * as XLSX from 'xlsx';
 
 export class TimeTableComponent {
   
-  dataSource:any; //*Holds Table Source Data.
-  selection:any; //*Array to get save the rows of Holidays selected.
+  dataSource:any; //* Holds Table Source Data.
+  selection:any; //* Array to get save the rows of Holidays selected.
   displayedColumns:string[] = [];
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
   name: string = '';
@@ -25,7 +25,7 @@ export class TimeTableComponent {
     public dialogExport: MatDialog, 
   ) {
      this.selection = new SelectionModel<TimeTableItem>(true, []);
-     /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
+     /* Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
      this.displayedColumns = ['Date', 'Ore','Rol','Ferie', 'Ufficio'];
   }
   
@@ -41,12 +41,12 @@ export class TimeTableComponent {
   }
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //*We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
+    // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //* We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
     this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
     this.getDefaultMonthlyTable();
-    //*Create the table passing the new dataSource
-    //*Since dataSource is subscribe ngOnInit and will detect all the changes there is no need to update the dataSource on the clearTable(), nextMonth() ...
+    //* Create the table passing the new dataSource
+    //* Since dataSource is subscribe ngOnInit and will detect all the changes there is no need to update the dataSource on the clearTable(), nextMonth() ...
     this.monthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
   
@@ -83,7 +83,7 @@ export class TimeTableComponent {
 
   exportMaterialTable(name: string){
     let { sheetName, fileName } = this.getFileName(name);
-    //Get Current Table Data from the Observable.
+    // Get Current Table Data from the Observable.
     let dataTable: TimeTableItem[] = []
     this.monthlyTable$.subscribe(result => dataTable = result);
     let dataTableMapped = dataTable.map(x => ({
@@ -113,7 +113,7 @@ export class TimeTableComponent {
 
   }
 
-  //-------------Dialogs---------------------------
+  // -------------Dialogs---------------------------
   openExportDialog() {
     const dialogRef = this.dialogExport.open(DialogExportContent, {
       data: { 
@@ -133,7 +133,7 @@ export class TimeTableComponent {
 
 @Component({
   selector: 'dialog-export',
-  templateUrl: 'dialogs/dialog-export.html',
+  templateUrl: '../../dialogs/dialog-export.html',
 })
 export class DialogExportContent {
   constructor(

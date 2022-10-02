@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
+import { AlertService } from 'src/app/services/alert.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-registration',
@@ -14,6 +17,8 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private alertService: AlertService,
     private router: Router,
   ) { }
 
@@ -39,8 +44,18 @@ export class RegistrationComponent implements OnInit {
         }
 
         this.loading = true;
-        this.router.navigate(['/log-in'])
-       
+        this.authService.register(this.form.value)
+          .pipe(first())
+          .subscribe({
+              next: () => {
+                  this.alertService.success('Registration successful', { keepAfterRouteChange: true });
+                  this.router.navigate(['../home']);
+              },
+              error: error => {
+                  this.alertService.error(error);
+                  this.loading = false;
+              }
+          });
     }
 
 }
