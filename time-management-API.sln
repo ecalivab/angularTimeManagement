@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "time-management-API", "time-management-API\time-management-API.csproj", "{01A7AC92-8B01-40B3-A52C-F61344FF2C4B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01A7AC92-8B01-40B3-A52C-F61344FF2C4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01A7AC92-8B01-40B3-A52C-F61344FF2C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01A7AC92-8B01-40B3-A52C-F61344FF2C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01A7AC92-8B01-40B3-A52C-F61344FF2C4B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {99EEFDC7-EE44-4953-96B6-C12252F7850B}
+	EndGlobalSection
+EndGlobal
