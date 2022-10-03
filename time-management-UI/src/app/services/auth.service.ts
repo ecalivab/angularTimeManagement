@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, shareReplay, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user';
 import { UserStore } from '../store/user.store';
@@ -18,13 +18,18 @@ export class AuthService {
     private readonly httpClient: HttpClient,
     private readonly userStore: UserStore,) 
   { }
-
+  
+  //* We are calling *shareReplay* to prevent the receiver of this Observable from accidentally triggering multiple POST requests due to multiple subscriptions.
   login(email:string, password:string ): void {
     this.httpClient.post<User>(`${this.url}/Auth/login`, {email, password}).pipe(
-        catchError(this.handleError)
+        catchError(this.handleError), shareReplay()
       ).subscribe(
         data => this.userStore.updateUser(data)
       );
+  }
+
+  logout(): void {
+    this.userStore.logoutUser()
   }
 
   register(user: User): Observable<any> {
@@ -44,3 +49,7 @@ export class AuthService {
     return throwError(() => msg);
   }
 }
+function sharedRepay(): import("rxjs").OperatorFunction<User, unknown> {
+  throw new Error('Function not implemented.');
+}
+

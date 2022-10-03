@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Route, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserStore } from 'src/app/store/user.store';
 
 @Component({
   selector: 'app-log-in',
@@ -15,9 +18,11 @@ export class LogInComponent implements OnInit {
   submitted = false;
   constructor( 
     private formBuilder: FormBuilder,
-    private router: Router,
+    private readonly userStore: UserStore,
     private authService: AuthService) { }
 
+  currentUser$: Observable<User> = this.userStore.user$;
+  userLogged$:  Observable<boolean> = this.userStore.userLogged$;
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -31,18 +36,15 @@ export class LogInComponent implements OnInit {
   get f() { return this.form.controls; }
 
   onSubmit() {
-        this.submitted = true;
-  
         // stop here if form is invalid
         if (this.form.invalid) {
             return;
         }
-
-        this.loading = true;
         this.authService.login(this.f.email.value, this.f.password.value)
         //this.router.navigate(['/home'])
     }
-
-
-
+  
+  logOut() {
+     this.authService.logout()
+  }
 }

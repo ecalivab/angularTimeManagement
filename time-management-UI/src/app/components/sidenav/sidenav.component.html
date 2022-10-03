@@ -31,7 +31,12 @@
       <div class="dropdown right-side">
         <mat-icon class="me-1" mat-list-icon>person</mat-icon>
         <span class="dropdown-toggle" type="button" id="logInForm" data-bs-toggle="dropdown" aria-expanded="false">
-          Log-In/Sign-Up
+          <ng-container *ngIf="userLogged$ | async; else userNotLogged">
+          <ng-container *ngIf="currentUser$| async as cu">{{cu.firstName}} {{cu.lastName}}</ng-container>
+          </ng-container>
+          <ng-template #userNotLogged>
+            Log-In/Sign-Up
+          </ng-template>
         </span>
         <ul class="dropdown-menu shadow-realm" aria-labelledby="logInForm">
           <app-log-in></app-log-in>

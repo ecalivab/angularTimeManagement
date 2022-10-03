@@ -3,6 +3,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { menuList } from './menu-list';
+import { UserStore } from 'src/app/store/user.store';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-sidenav',
@@ -23,6 +25,11 @@ export class SidenavComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private readonly userStore: UserStore
+    ) {}
 
+    currentUser$: Observable<User> = this.userStore.user$;
+    userLogged$:  Observable<boolean> = this.userStore.userLogged$;
 }

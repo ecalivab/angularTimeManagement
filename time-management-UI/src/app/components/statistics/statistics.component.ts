@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, map,Observable } from 'rxjs';
-import { combineLatest } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest ,map,Observable } from 'rxjs';
 import { DateTimeService, TimeTableItem } from '../../services/date-time.service';
 
 @Component({
@@ -25,9 +24,8 @@ export class StatisticsComponent implements OnInit {
   officeDays$: Observable<number>   = new Observable<number>();
   rolHours$: Observable<number>     = new Observable<number>();
 
-  totalMonthlyWorkDays: number = this.dateTimeService.getCurrentMonthTotalWorkDays();
-  totalMonthlyHours : number = this.totalMonthlyWorkDays*8;
-
+  totalMonthlyWorkDays$: Observable<number> = this.dateTimeService.getTotalWorkingDays();
+ 
   totalHourPercentage$: Observable<number> = new Observable<number>();
   totalWorkingDaysPercentage$: Observable<number> = new Observable<number>();
   totalOfficeDaysPercentage$: Observable<number> = new Observable<number>();
@@ -53,12 +51,14 @@ export class StatisticsComponent implements OnInit {
     this.holidays$     = this.dateTimeService.getHolidays();
     this.officeDays$   = this.dateTimeService.getOfficeDays();
     this.rolHours$     = this.dateTimeService.getTotalRolHours();
-    this.workingHours$ = this.dateTimeService.getTotalHours().pipe(combineLatest(this.rolHours$),map(([n1,n2]) =>  Math.abs(n1 - n2)));
+    
+    this.workingHours$ = combineLatest([this.rolHours$, this.dateTimeService.getTotalHours()]).pipe(map(([rol,hour]) => Math.abs(rol-hour)));
 
-    this.totalHourPercentage$ = this.workingHours$.pipe(map(result => (result/this.totalMonthlyHours)*100));
-    this.totalWorkingDaysPercentage$ = this.workingDays$.pipe(map(result => (result/this.totalMonthlyWorkDays)*100));
-    this.totalOfficeDaysPercentage$ = this.officeDays$.pipe(map(result => (result/this.totalMonthlyWorkDays)*100));
-    this.totalHolidaysPercentage$   = this.holidays$.pipe(map(result => (result/this.totalMonthlyWorkDays)*100));
+    this.totalHourPercentage$ = combineLatest([this.workingHours$, this.totalMonthlyWorkDays$]).pipe(map(([wh,mwd]) => (wh/(mwd*8))*100));
+    this.totalWorkingDaysPercentage$ = combineLatest([ this.workingDays$, this.totalMonthlyWorkDays$]).pipe(map(([wd,mwd]) => (wd/(mwd))*100));
+    this.totalOfficeDaysPercentage$ = combineLatest([ this.officeDays$, this.totalMonthlyWorkDays$]).pipe(map(([od,mwd]) => (od/(mwd))*100));
+    this.totalHolidaysPercentage$   = combineLatest([ this.holidays$, this.totalMonthlyWorkDays$]).pipe(map(([hd,mwd]) => (hd/(mwd))*100));
+
     // -------------------------ANOTHER WAY TO DO IT-----------------------------------------------
     // this.monthlyTable.subscribe(result => {
     //   this.officeDays = result.filter(item => item.Ferie === false && item.Ufficio === true).length;

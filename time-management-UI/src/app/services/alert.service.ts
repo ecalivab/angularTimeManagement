@@ -7,10 +7,10 @@ import { Alert, AlertType } from '../models/alert';
 })
 export class AlertService {
 
-  constructor() { }
+    constructor() { }
 
-   private subject = new Subject<Alert>();
-    private defaultId = 'default-alert';
+    private subject: Subject<Alert> = new Subject<Alert>();
+    private defaultId: string = 'default-alert';
 
     // enable subscribing to alerts observable
     onAlert(id = this.defaultId): Observable<Alert> {

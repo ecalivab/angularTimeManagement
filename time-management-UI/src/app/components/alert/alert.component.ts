@@ -25,7 +25,6 @@ export class AlertComponent implements OnInit {
           .subscribe(alert => {
               // clear alerts when an empty alert is received
               if (!alert.message) {
-
                   return;
               }
 

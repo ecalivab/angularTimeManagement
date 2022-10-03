@@ -2,7 +2,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { Component, Inject } from '@angular/core';
 import { DateTimeService, TimeTableItem } from '../../services/date-time.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
 
@@ -18,6 +18,7 @@ export class TimeTableComponent {
   selection:any; //* Array to get save the rows of Holidays selected.
   displayedColumns:string[] = [];
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
+  monthyTableSubscription$: Subscription = new Subscription();
   name: string = '';
 
   constructor(
@@ -47,7 +48,14 @@ export class TimeTableComponent {
     this.getDefaultMonthlyTable();
     //* Create the table passing the new dataSource
     //* Since dataSource is subscribe ngOnInit and will detect all the changes there is no need to update the dataSource on the clearTable(), nextMonth() ...
-    this.monthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+    this.monthyTableSubscription$ = this.monthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
+  }
+
+  ngOnDestroy(): void {
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+    this.clearTable();
+    this.monthyTableSubscription$.unsubscribe();
   }
   
   clearTable(){

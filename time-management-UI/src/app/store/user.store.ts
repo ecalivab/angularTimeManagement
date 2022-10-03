@@ -17,9 +17,13 @@ export abstract class UserStore {
         this.userLogged.next(value);
     }
 
-    updateUser(value: User) {
+    updateUser(value: User): void {
         this.user.next(value);
         this.updateUserLogged(true);
     }
 
+    logoutUser(): void {
+        this.user.next(new User());
+        this.userLogged.next(false);
+    }
 }

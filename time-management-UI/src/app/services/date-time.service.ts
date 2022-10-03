@@ -198,7 +198,7 @@ export class DateTimeService {
     return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Rol, 0)));
   }
 
-  getTotalWorkingDays(){
+  getTotalWorkingDays(): Observable<number> {
     return this.MonthlyTable$.pipe(map(result => result.length));
   }
 
