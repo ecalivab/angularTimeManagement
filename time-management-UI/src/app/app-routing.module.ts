@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SidenavComponent} from './components/sidenav/sidenav.component'
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LogInComponent } from './components/log-in/log-in.component'
 import { RegistrationComponent } from './components/registration/registration.component';
 const routes: Routes = [
-  { path: '', component: SidenavComponent },
-  { path: 'home', component: SidenavComponent },
+  { path: '', component: DashboardComponent },
+  { path: 'home', component: DashboardComponent },
   { path: 'log-in', component: LogInComponent},
   { path: 'register', component: RegistrationComponent },
   { path: '**', redirectTo: '' }

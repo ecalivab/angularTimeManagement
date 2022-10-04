@@ -13,16 +13,16 @@
 /bazel-out
 
 #VS
-.vs/time-management-API/
+.vs/time-management-API
 .vs/time-management-API/*
-/time-management-API/obj
-/time-management-API/bin/Debug
+time-management-API/obj
+time-management-API/bin/Debug
 
 
 # Node
-/time-management-UI/node_modules
-/time-management-UI/npm-debug.log
-/time-management-UI/yarn-error.log
+time-management-UI/node_modules
+time-management-UI/npm-debug.log
+time-management-UI/yarn-error.log
 
 # IDEs and editors
 .idea/
@@ -43,17 +43,25 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
-/time-management-UI/.vscode/
+time-management-UI/.vscode/
 
 # Miscellaneous
-/time-management-UI/.angular/cache
-/time-management-UI/.sass-cache/
-/time-management-UI/connect.lock
-/time-management-UI/coverage
-/time-management-UI/libpeerconnection.log
-/time-management-UI/testem.log
-/time-management-UI/typings
+time-management-UI/.angular/cache
+time-management-UI/.sass-cache/
+time-management-UI/connect.lock
+time-management-UI/coverage
+time-management-UI/libpeerconnection.log
+time-management-UI/testem.log
+time-management-UI/typings
+
+time-management-API/bin
+time-management-API/bin/*
+
+time-management-API/bin/Debug/net6.0/time-management-API.pdb
+time-management-API/bin/Debug/net6.0/time-management-API.dll
+time-management-API/obj/staticwebassets.pack.sentinel
 
 # System files
 .DS_Store
 Thumbs.db
+
