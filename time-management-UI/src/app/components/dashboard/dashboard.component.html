@@ -56,7 +56,7 @@
           <!--child variable #dateTable “the hashtag syntax” relies on a simple hashtag to create a reference to an element in a template-->
           <div><app-time-table #dateTable></app-time-table></div>
           <div class="mt-2 btn-group float-end me-2" role="group">
-            <button mat-raised-button class="me-2" color="primary" (click)="dateTable.saveTable()">Save</button>
+            <button mat-raised-button class="me-2" color="primary" [disabled]="!isUserLogged" (click)="dateTable.saveTable()">Save</button>
             <!--Bind Child Function with Parent using a local variable-->
             <button mat-raised-button color="warn" (click)="dateTable.clearTable()">Clear</button>
             <button mat-raised-button class="ms-2" color="accent" (click)="dateTable.openExportDialog()">Export Table</button>

@@ -1,9 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
-import { DateTimeService,TimeTableItem } from '../../services/date-time.service';
+import { map, Observable, shareReplay, Subscription } from 'rxjs';
+import { DateTimeService } from '../../services/date-time.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { CARDS } from './card-content';
+import { CardContent } from './card-content';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UserStore } from 'src/app/store/user.store';
+import { TimeTableItem } from 'src/app/models/time-table';
+import { TimeTableStore } from 'src/app/store/time-table.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,23 +14,41 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./dashboard.component.scss']
 })
 
-
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit {
 
   constructor(private dateTimeService: DateTimeService, 
     private breakpointObserver: BreakpointObserver,
     public dialogHoliday: MatDialog, 
-    public dialogVideo: MatDialog,) {
+    public dialogVideo: MatDialog,
+    public readonly userStore: UserStore,
+    public readonly timeTableStore: TimeTableStore
+    ) {
       this.dateTimeService.getCurrentMonthTotalWorkDays();
     }
 
-  monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
   monthInTable$: Observable<Date> = new Observable<Date>();
+
+  userLogged$:  Observable<boolean> = this.userStore.userLogged$;
+  isUserLogged: boolean = false;
 
   columns:number = 4;
   componentCols:number = 2;
 
-  readonly cards = CARDS;
+  // CARD Section 
+  // It was a good idea at first but the cards make absolutely nothing
+   remaindingWD = this.dateTimeService.getRemaindingWorkDays();
+   totalWD = this.dateTimeService.getCurrentMonthTotalWorkDays();
+   monthHolidays = this.dateTimeService.gHolidays;
+   numberMonthHolidays = this.monthHolidays.length;
+
+  CARDS: CardContent[] = [
+    {Title:'Remainding Work Days', Icon:'work' , Color:'icon-blue', Content:`<p>${this.remaindingWD}</p>`, FuncNumber: 1},
+    {Title:'Total Work Days', Icon:'work' , Color:'icon-orange', Content:`<p>${this.totalWD}</p>`, FuncNumber:2},
+    {Title:'Holidays', Icon:'nature_people' , Color:'icon-green', Content:`<p> ${this.numberMonthHolidays}</p>`, FuncNumber:3},
+    //{Title:'Surprise', Icon:'youtube_searched_for' , Color:'icon-red', Content:"<input matInput type='text' [(ngModel)]='hello' (ngModelChange)='inputChanged($event)' placeholder='Said Ciao' name='hello'>" },
+  ];
+
+  readonly cards = this.CARDS;
 
   isMedium$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Medium)
     .pipe(
@@ -36,13 +57,14 @@ export class DashboardComponent implements OnInit{
     );
 
   // -------- Test of an Observable Strong ---------
-  hello: string = "";
-  inputChanged($event:string){
-    this.dateTimeService.updateText($event);
-    if($event.toLocaleLowerCase() == 'ciao capozzi'){
-      this.openVideoDialog();
-    }
-  }
+
+  // hello: string = "";
+  // inputChanged($event:string){
+  //   this.dateTimeService.updateText($event);
+  //   if($event.toLocaleLowerCase() == 'ciao capozzi'){
+  //     this.openVideoDialog();
+  //   }
+  // }
 
   inputChangedSimplified(letter: string) {
     this.dateTimeService.updateText(letter);
@@ -79,6 +101,7 @@ export class DashboardComponent implements OnInit{
   }
 
   //-----------Enf of Dialogs------------------------
+  
   cardFunction(num:number) {
     switch(num){
       case 3:
@@ -91,9 +114,10 @@ export class DashboardComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    //*We get hold of the monthlyTable$ observable. We are not doing anyting with it But you can subscribe to it to get the latest list of Todo items.
-    this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
-    this.monthInTable$ = this.dateTimeService.getMonthInTable();
+    //*We get hold of the monthlyTable$ observable. We are not doing anyting with it But you can subscribe to it to get the latest list of Table items.
+    this.monthInTable$ = this.timeTableStore.getMonthInTable();
+
+    this.userLogged$.subscribe(val => this.isUserLogged = val)
 
     //*Layout resize by breakpoint size (Medium-Handset)
     this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.Medium, Breakpoints.XSmall, Breakpoints.Large, Breakpoints.XLarge]).subscribe((state: BreakpointState) => {
@@ -126,7 +150,6 @@ export class DashboardComponent implements OnInit{
 export class DialogHolidayContent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 }
-
 
 @Component({
   selector: 'dialog-video',

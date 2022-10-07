@@ -9,5 +9,4 @@ export class MenuItem {
 
 export const menuList = [
     new MenuItem('Calendar', 'calendar', 'montly calendar', 'calendar_today'),
-    new MenuItem('Profile', 'user-profile', 'user', 'person'),
 ];

@@ -13,6 +13,10 @@
         <mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
         <h4 [routerLink]='item.route' mat-line [hidden]="collapse">{{ item.name }}</h4>
       </mat-list-item>
+      <mat-list-item [ngClass]="{'isDisabled': userProfileRoute === 'home'}">
+        <mat-icon mat-list-icon>person</mat-icon>
+        <h4 [routerLink]="userProfileRoute" mat-line [hidden]="collapse">User Profile</h4>
+      </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -26,7 +30,7 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>Semantyca</span>
+      <span class="hand" routerLink="home">Semantyca</span>
 
       <div class="dropdown right-side">
         <mat-icon class="me-1" mat-list-icon>person</mat-icon>

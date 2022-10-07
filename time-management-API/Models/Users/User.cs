@@ -1,4 +1,6 @@
-﻿namespace time_management_API.Models.Users
+﻿using time_management_API.Models.TimeTables;
+
+namespace time_management_API.Models.Users
 {
     public class User
     {
@@ -8,6 +10,9 @@
         public string Email { get; set; } = string.Empty;
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+
+        // Navigation Property
+        public virtual ICollection<TimeTable> TimeTable { get; set; }
 
     }
 }

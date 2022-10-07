@@ -7,23 +7,23 @@ import { User } from '../models/user'
 })
 
 export abstract class UserStore {
-    readonly user: BehaviorSubject<User> = new BehaviorSubject<User>(new User());
-    readonly userLogged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _user: BehaviorSubject<User> = new BehaviorSubject<User>(new User());
+    private readonly _userLogged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-    readonly user$: Observable<User> = this.user.asObservable();
-    readonly userLogged$: Observable<boolean> = this.userLogged.asObservable();
+    readonly user$: Observable<User> = this._user.asObservable();
+    readonly userLogged$: Observable<boolean> = this._userLogged.asObservable();
 
     updateUserLogged(value: boolean): void {
-        this.userLogged.next(value);
+        this._userLogged.next(value);
     }
 
     updateUser(value: User): void {
-        this.user.next(value);
+        this._user.next(value);
         this.updateUserLogged(true);
     }
 
     logoutUser(): void {
-        this.user.next(new User());
-        this.userLogged.next(false);
+        this._user.next(new User());
+        this._userLogged.next(false);
     }
 }

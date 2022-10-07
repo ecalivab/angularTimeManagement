@@ -50,21 +50,21 @@ namespace time_management_API.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
         public IActionResult GetById(int id)
         {
             var user = _userService.GetById(id);
             return Ok(user);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         public IActionResult Update(int id, UpdateRequest model)
         {
             _userService.Update(id, model);
             return Ok(new { message = "User updated successfully" });
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public IActionResult Delete(int id)
         {
             _userService.Delete(id);

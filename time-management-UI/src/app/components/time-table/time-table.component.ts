@@ -1,10 +1,14 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
-import { Component, Inject } from '@angular/core';
-import { DateTimeService, TimeTableItem } from '../../services/date-time.service';
-import { Observable, Subscription } from 'rxjs';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { DateTimeService } from '../../services/date-time.service';
+import { first, Observable, Subscription } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
+import { TimeTableInfo, TimeTableItem, TimeTableRequest } from 'src/app/models/time-table';
+import { TimeTableStore } from 'src/app/store/time-table.store';
+import { AuthService } from 'src/app/services/auth.service';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-time-table',
@@ -12,7 +16,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./time-table.component.scss']
 })
 
-export class TimeTableComponent {
+export class TimeTableComponent implements OnInit, OnDestroy {
   
   dataSource:any; //* Holds Table Source Data.
   selection:any; //* Array to get save the rows of Holidays selected.
@@ -23,6 +27,9 @@ export class TimeTableComponent {
 
   constructor(
     private dateTimeService: DateTimeService,
+    private readonly timeTableStore: TimeTableStore,
+    private authService: AuthService,
+    private alertService: AlertService,
     public dialogExport: MatDialog, 
   ) {
      this.selection = new SelectionModel<TimeTableItem>(true, []);
@@ -38,42 +45,70 @@ export class TimeTableComponent {
   }
   
   updateTable(table:TimeTableItem[]){
-    this.dateTimeService.updateTable(table); 
+    this.dateTimeService.updateTableOnChange(table); 
   }
 
   ngOnInit(): void {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //* We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
-    this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
+    this.clearTable();
+    //* We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of items.
+    //* Create the table passing the new dataSource  
     this.getDefaultMonthlyTable();
-    //* Create the table passing the new dataSource
+    this.monthlyTable$ = this.timeTableStore.MonthlyTable$;
     //* Since dataSource is subscribe ngOnInit and will detect all the changes there is no need to update the dataSource on the clearTable(), nextMonth() ...
     this.monthyTableSubscription$ = this.monthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy = (): void => {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
     this.clearTable();
     this.monthyTableSubscription$.unsubscribe();
   }
   
-  clearTable(){
+  clearTable = () => {
     this.dateTimeService.clear();
   }
 
-  nextMonth(){
+  nextMonth = () => {
     const direction = 'up';
     this.dateTimeService.getNewMonth(direction);
   }
 
-  previousMonth(){
+  previousMonth = () => {
    const direction = "down";
    this.dateTimeService.getNewMonth(direction);
   } 
 
-  saveTable(){
-    this.monthlyTable$.subscribe(result => console.log(result));
+  saveTable = () => {
+    let cleanTable: TimeTableRequest[] = [];
+    const userId = this.authService.getCurrentUserLocalStore().id
+   
+    this.monthlyTable$.subscribe(currentTable => { 
+      currentTable.forEach(row => {
+        // I checked if it is the default case, if it is I will not save it on the database.
+        if(!(row.Ore == 8 && row.Rol == 0 && row.Ferie == false && row.Ufficio == true)) 
+        {
+          if(row.Ferie == true)
+          {
+            row.Ore = 0, row.Rol = 0, row.Ufficio = false
+          }
+          
+          cleanTable.push(this.timeTableStore.timeTableRequestAdapter(row,userId));
+        }
+      });
+    });
+
+    this.dateTimeService.saveTable(cleanTable)
+    .pipe(first())
+    .subscribe({
+      next: () => {
+        this.alertService.success('Table Save Succesfull')
+      },
+      error: error => {
+        this.alertService.error(error);
+      }
+    });
   }
 
   // *EXPORT TABLE SECTION
@@ -89,7 +124,7 @@ export class TimeTableComponent {
     };
   };
 
-  exportMaterialTable(name: string){
+  exportMaterialTable = (name: string) => {
     let { sheetName, fileName } = this.getFileName(name);
     // Get Current Table Data from the Observable.
     let dataTable: TimeTableItem[] = []

@@ -1,21 +1,9 @@
-import { isNgTemplate } from '@angular/compiler';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-
-export interface TimeTableItem {
-  Date: Date;
-  Ore:  number;
-  Rol:  number;
-  Ferie: boolean;
-  Ufficio: boolean;
-}
-
-export interface Holiday {
-  Name:String;
-  Date:Date;
-  Weekend: boolean;
-}
+import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { Holiday, HOLIDAYS, TimeTableInfo, TimeTableItem, TimeTableRequest } from '../models/time-table';
+import { TimeTableStore } from '../store/time-table.store';
 
 @Injectable({
   providedIn: 'root'
@@ -23,25 +11,8 @@ export interface Holiday {
 
 
 export class DateTimeService {
-  
-  // ------Holidays--------------
-  Holidays: Holiday [] = 
-  [
-    {Name: "Dopo Capodanno", Date: new Date(2022,0,1), Weekend: true},
-    {Name: "Epifania", Date: new Date(2022,0,6), Weekend: false},
-    {Name: "Pasqua", Date: new Date(2022,3,17), Weekend: true},
-    {Name: "Pasquetta", Date: new Date(2022,3,18), Weekend: false},
-    {Name: "Anniversarop della Liberzaione d'Italia", Date: new Date(2022,3,25),Weekend: false},
-    {Name: "Festa dei Lavoratori", Date: new Date(2022,4,1), Weekend: true},
-    {Name: "Festa della Repubblica Italiana", Date: new Date(2022,5,2),Weekend: false},
-    {Name: "Ferragosto", Date: new Date(2022,7,15),Weekend: false},
-    {Name: "Tutti i Santi", Date: new Date(2022,10,1),Weekend: false},
-    {Name: "Sant'Ambrogio", Date: new Date(2022,11,7),Weekend: false},
-    {Name: "L'Immacolata Concezione", Date: new Date(2022,11,8),Weekend: false},
-    {Name: "Natale", Date: new Date(2022,11,25), Weekend: true},
-    {Name: "Santo Stefano", Date: new Date(2022,11,26),Weekend: false},
-  ]
 
+  holidays = HOLIDAYS
   gHolidays:Holiday[] = [];
 
   // -------- Test of an Observable Strong ---------
@@ -54,20 +25,46 @@ export class DateTimeService {
   }
   //--------------End of Test ----------------------
 
-  //* Here, we create BehaviorSubject of type TimeTableItem[]. Behavior expects us to provide an initial value. We assign an empty array. The BehaviorSubject will always emit the latest list of TimeTableItem items as an array.
-  private readonly _MonthlyTable:BehaviorSubject<any> = new BehaviorSubject([]);
-  //* Also, it is advisable not to expose the BehaviorSubject outside the service. Hence we convert it to normal Observable and return it. This is because the methods like next, complete or error do not exist on normal observable.
-  MonthlyTable$: Observable<TimeTableItem[]> = this._MonthlyTable.asObservable();
+
   //* The MonthlyTable will store the todo items in memory.
-  private MonthlyTable:TimeTableItem[] = [];
+  private MonthlyTable: TimeTableItem[] = [];
 
-  constructor() { }
+  constructor(
+    private readonly timeTableStore: TimeTableStore,
+    private readonly httpClient: HttpClient) { }
 
-  isHoliday(itemDate: Date): Boolean {
-    return this.Holidays.some(h => h.Date.getTime() == itemDate.getTime())
+
+  //--------------- API CALLS-----------------------
+  readonly url: string = environment.apiURL
+  readonly httpOptions: {} = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' })
   }
 
-  createTable (month:number, year:number):void {
+  saveTable(table: TimeTableRequest[]) : Observable<any> {
+    return this.httpClient.post(`${this.url}/TimeTable/save`, table).pipe(catchError(this.handleError))
+  }
+  
+   // Error
+  handleError(error: HttpErrorResponse) {
+    let msg = '';
+    if (error.error instanceof ErrorEvent) {
+      // client-side error
+      msg = error.error.message;
+    } else {
+      // server-side error
+      msg = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    return throwError(() => msg);
+  }
+
+  //----------------END API CALLS---------------------
+
+
+  isHoliday(itemDate: Date): Boolean {
+    return this.holidays.some(h => h.Date.getTime() == itemDate.getTime())
+  }
+
+  createTable (month: number, year: number): void {
     var date = new Date(year, month, 1);
     while (date.getMonth() === month) {
       var item:TimeTableItem = {
@@ -84,26 +81,21 @@ export class DateTimeService {
       }
       date.setDate(date.getDate() + 1);
     }
-    this._MonthlyTable.next(Object.assign([], this.MonthlyTable));
+    this.timeTableStore.updateTimeTable(this.MonthlyTable)
     return;
   }
 
 
   clear(){
     this.MonthlyTable = [];
-    this._MonthlyTable.next(Object.assign([], this.MonthlyTable));
+    this.timeTableStore.clear();
   }
 
-  updateTable(dataSource:TimeTableItem[]){
-    //Clear Table so I don't have repeated values
-    this._MonthlyTable.next([]);
-    this.MonthlyTable$ = of([]);
-    //Add Complete updated table
-    this._MonthlyTable.next(dataSource);
-    this.MonthlyTable$ = this._MonthlyTable;
+  updateTableOnChange(dataSource: TimeTableItem[]) {
+    this.timeTableStore.updateTimeTableOnChange(dataSource);
   }
 
-  getNewMonth(direction: string):void {
+  getNewMonth(direction: string): void {
       const data = this.MonthlyTable.length > 0 ? {'currentMonth': this.MonthlyTable[0].Date.getMonth(), 'currentYear':this.MonthlyTable[0].Date.getFullYear()} : {'currentMonth':-10, 'currentYear':-10};
       if(data.currentMonth == -10) {
         alert("Something Wrong Happend!!!");
@@ -115,7 +107,7 @@ export class DateTimeService {
       this.createTable(checkedData.month,checkedData.year);    
   }
 
-  checkNewYear(month:number, year:number){
+  checkNewYear(month: number, year: number): any {
     if(month > 11) {
       year+=1;
       month = 0;
@@ -129,7 +121,7 @@ export class DateTimeService {
     return {month, year};
   }
 
-  getRemaindingWorkDays() :number {
+  getRemaindingWorkDays(): number {
     let counter = 0;
     let dateObj = new Date();
     let currMonth = dateObj.getMonth(); 
@@ -143,7 +135,7 @@ export class DateTimeService {
     return counter;
   }
 
-  getCurrentMonthTotalWorkDays():number {
+  getCurrentMonthTotalWorkDays(): number {
     let counter = 0;
     let dateObj = new Date();
     let currMonth = dateObj.getMonth();
@@ -157,60 +149,19 @@ export class DateTimeService {
          }        
       }
       //* This Set the Number of Holidays in the Month!
-      let index = this.Holidays.findIndex((x => x.Date.toISOString() === date.toISOString()));
+      let index = this.holidays.findIndex((x => x.Date.toISOString() === date.toISOString()));
       if(index > 0) {
-         this.gHolidays.push(this.Holidays[index]);
+         this.gHolidays.push(this.holidays[index]);
       }
       date.setDate(date.getDate() + 1);
     }
 
     return counter;
   }
-
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-      // TODO: better job of transforming error for user consumption
-      //this.log(`${operation} failed: ${error.message}`);
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
- }
-  //* OBSERVABLE SECCION FOR STATISTICS
-  getTotalHours():Observable<number> {
-    return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Ore, 0)));
-  }
-
-  getWorkingDays():Observable<number>{
-    return this.MonthlyTable$.pipe(map(result=> result.filter(item=> item.Ferie === false).length));
-  }
-
-  getHolidays(): Observable<number>{
-    return this.MonthlyTable$.pipe(map(result => result.filter(item => item.Ferie === true).length));
-  }
-  
-  getOfficeDays():Observable<number>{
-    return this.MonthlyTable$.pipe(map(result => result.filter(item => item.Ferie === false && item.Ufficio === true).length));
-  }
-
-  getTotalRolHours():Observable<number>{
-    return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Rol, 0)));
-  }
-
-  getTotalWorkingDays(): Observable<number> {
-    return this.MonthlyTable$.pipe(map(result => result.length));
-  }
-
-  getMonthInTable():Observable<Date>{
-    return this.MonthlyTable$.pipe(map(res => res.length> 0 ? res[0].Date : new Date()), //Add a Control because when I clear the array it cannot read the property Date and fail.
-      catchError(this.handleError<any>('new Date()'))
-    );
-  }
-  
+ 
   //* SECTION FOR XLS return normal values
 
-  getNormalWorkingDays():number{
+  getNormalWorkingDays(): number{
     return this.MonthlyTable.filter(item=> item.Ferie === false).length;
   }
 
@@ -218,12 +169,11 @@ export class DateTimeService {
     return this.MonthlyTable.filter(item => item.Ferie === true).length;
   }
   
-  getNormalOfficeDays():number {
+  getNormalOfficeDays(): number {
     return this.MonthlyTable.filter(item => item.Ferie === false && item.Ufficio === true).length;
   }
 
   getNormalTotalRolHours(): number {
     return this.MonthlyTable.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Rol, 0);
   }
-
 }

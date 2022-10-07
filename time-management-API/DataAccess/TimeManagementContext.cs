@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using time_management_API.Models.TimeTables;
 using time_management_API.Models.Users;
 
 namespace time_management_API.DataAccess
@@ -13,6 +14,7 @@ namespace time_management_API.DataAccess
         }
 
         public DbSet<User> User { get; set; }
+        public DbSet<TimeTable> TimeTable { get; set; }
 
     }
 }

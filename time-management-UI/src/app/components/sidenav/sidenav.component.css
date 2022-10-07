@@ -25,3 +25,9 @@
     display: flex;
     align-items: center;
 }
+
+.isDisabled {
+  cursor: not-allowed!important;
+  opacity: 0.5;
+  text-decoration: none;
+}

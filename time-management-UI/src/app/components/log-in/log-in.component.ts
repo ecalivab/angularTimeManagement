@@ -41,7 +41,7 @@ export class LogInComponent implements OnInit {
             return;
         }
         this.authService.login(this.f.email.value, this.f.password.value)
-        //this.router.navigate(['/home'])
+        this.form.reset();
     }
   
   logOut() {

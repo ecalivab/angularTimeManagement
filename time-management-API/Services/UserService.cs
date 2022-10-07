@@ -125,7 +125,9 @@ namespace time_management_API.Services
         private User getUser(int id)
         {
             var user = _context.User.Find(id);
-            if (user == null) throw new KeyNotFoundException("User not found");
+            if (user == null) 
+                throw new KeyNotFoundException("User not found");
+
             return user;
         }
 

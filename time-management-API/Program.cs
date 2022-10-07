@@ -18,6 +18,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<TimeManagementContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITimeTableService, TimeTableService>();
 
 
 var app = builder.Build();

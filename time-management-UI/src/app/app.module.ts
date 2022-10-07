@@ -34,6 +34,7 @@ import { LogInComponent } from './components/log-in/log-in.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertComponent } from './components/alert/alert.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { AlertComponent } from './components/alert/alert.component';
     LogInComponent,
     RegistrationComponent,
     AlertComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,
