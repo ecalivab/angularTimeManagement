@@ -3,29 +3,29 @@
     <!-- Date Column -->
     <ng-container matColumnDef="Date">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-      <td mat-cell *matCellDef="let row">{{row.Date | date: 'EE MMM dd, yyyy'}}</td>
+      <td mat-cell *matCellDef="let row">{{row.date | date: 'EE MMM dd, yyyy'}}</td>
     </ng-container>
 
     <!-- Ore Column -->
-    <ng-container matColumnDef="Ore">
+    <ng-container matColumnDef="Hours">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Hours</th>
-      <td mat-cell *matCellDef="let row"><input matInput type="number" max="20" min="1" value="{{row.Ferie ? 0 : (row.Ore - row.Rol)}}" [disabled]="row.Ferie" [(ngModel)]="row.Ore" (ngModelChange)="updateTable(dataSource._data.value)"></td>
+      <td mat-cell *matCellDef="let row"><input matInput type="number" max="20" min="1" value="{{row.holiday ? 0 : (row.hours - row.rol)}}" [disabled]="row.holiday" [(ngModel)]="row.hours" (ngModelChange)="updateTable(dataSource._data.value)"></td>
     </ng-container>
      
     <!-- Rol Column -->
     <ng-container matColumnDef="Rol">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Rol</th>
-      <td mat-cell *matCellDef="let row"><input type="number" matInput max="20" min="0" value="{{row.Ferie ? 0 : row.Rol}}" [disabled]="row.Ferie" [(ngModel)]="row.Rol" (ngModelChange)="updateTable(dataSource._data.value)"></td>
+      <td mat-cell *matCellDef="let row"><input type="number" matInput max="20" min="0" value="{{row.holiday ? 0 : row.rol}}" [disabled]="row.holiday" [(ngModel)]="row.rol" (ngModelChange)="updateTable(dataSource._data.value)"></td>
     </ng-container>
 
     <!-- Ferie Column -->
-    <ng-container matColumnDef="Ferie">
+    <ng-container matColumnDef="Holidays">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Holiday</th>
       <td mat-cell *matCellDef="let row">
         <mat-checkbox
           (change)="$event ? selection.toggle(row) : null"
           [checked]="selection.isSelected(row)"
-          [(ngModel)]="row.Ferie"
+          [(ngModel)]="row.holiday"
           [disabled]="row.excluded"
           (ngModelChange) = "updateTable(dataSource._data.value)">
           <!--(ngModel binds the value of row.Ferie that I can use it to disable the other columns) -->
@@ -34,13 +34,13 @@
     </ng-container>
 
      <!-- Ufficio Column -->   
-     <ng-container matColumnDef="Ufficio">
+     <ng-container matColumnDef="Office">
        <th mat-header-cell *matHeaderCellDef mat-sort-header>Office</th>
        <td mat-cell *matCellDef="let row">
         <mat-checkbox
-          [checked]="row.Ferie ? false: row.Ufficio"
-          [disabled]="row.Ferie"
-          [(ngModel)]="row.Ufficio"
+          [checked]="row.holiday ? false: row.office"
+          [disabled]="row.holiday"
+          [(ngModel)]="row.office"
           (ngModelChange) = "updateTable(dataSource._data.value)">
           <!-- *ngIf="!row.excluded" -->
         </mat-checkbox>
@@ -49,7 +49,7 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
-        [ngStyle]="row.Ferie && {'background-color': 'lightgrey'}"></tr>
+        [ngStyle]="row.holidays && {'background-color': 'lightgrey'}"></tr>
   </table>
 </div>
 

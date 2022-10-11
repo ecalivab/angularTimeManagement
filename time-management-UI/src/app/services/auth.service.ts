@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, map, Observable, shareReplay, throwError } from 'rxjs';
+import { catchError, Observable, shareReplay, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user';
 import { UserStore } from '../store/user.store';
@@ -36,6 +36,16 @@ export class AuthService {
   getCurrentUserLocalStore(): User {
     let currentUser: User = JSON.parse(localStorage.getItem('user')!); // with ! at the end of getitem inside the JSON.parse(!) I am saying that I know the value cannot be null
     return currentUser
+  }
+
+  isUserLogged(): boolean {
+    let logged: boolean =  false;
+    let localUser: boolean = !!this.getCurrentUserLocalStore() ? true: false
+    this.userStore.userLogged$.subscribe(val => 
+      logged = val
+    )
+
+      return logged || localUser;
   }
 
   logout(): void {

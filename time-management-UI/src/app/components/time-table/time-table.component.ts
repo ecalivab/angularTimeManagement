@@ -34,20 +34,9 @@ export class TimeTableComponent implements OnInit, OnDestroy {
   ) {
      this.selection = new SelectionModel<TimeTableItem>(true, []);
      /* Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-     this.displayedColumns = ['Date', 'Ore','Rol','Ferie', 'Ufficio'];
+     this.displayedColumns = ['Date', 'Hours','Rol','Holidays', 'Office'];
   }
   
-  getDefaultMonthlyTable(): void {
-    let dateObj = new Date();
-    let month = dateObj.getMonth(); 
-    let year = dateObj.getFullYear();
-    this.dateTimeService.createTable(month,year);
-  }
-  
-  updateTable(table:TimeTableItem[]){
-    this.dateTimeService.updateTableOnChange(table); 
-  }
-
   ngOnInit(): void {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     this.clearTable();
@@ -59,11 +48,22 @@ export class TimeTableComponent implements OnInit, OnDestroy {
     this.monthyTableSubscription$ = this.monthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
 
-  ngOnDestroy = (): void => {
+  ngOnDestroy(): void {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
     this.clearTable();
     this.monthyTableSubscription$.unsubscribe();
+  }
+
+  getDefaultMonthlyTable = (): void => {
+    let dateObj = new Date();
+    let month = dateObj.getMonth(); 
+    let year = dateObj.getFullYear();
+    this.dateTimeService.prepareTable(month,year);
+  }
+  
+  updateTable = (table:TimeTableItem[]) => {
+    this.dateTimeService.updateTableOnChange(table); 
   }
   
   clearTable = () => {
@@ -80,18 +80,20 @@ export class TimeTableComponent implements OnInit, OnDestroy {
    this.dateTimeService.getNewMonth(direction);
   } 
 
+  //* SaveTable will save all the not default values in the DB. If the user click save when all the values
+  //* are default that means it is overriding the previuos changes if it has and has to be deleted form the DB
   saveTable = () => {
     let cleanTable: TimeTableRequest[] = [];
     const userId = this.authService.getCurrentUserLocalStore().id
-   
+
     this.monthlyTable$.subscribe(currentTable => { 
       currentTable.forEach(row => {
         // I checked if it is the default case, if it is I will not save it on the database.
-        if(!(row.Ore == 8 && row.Rol == 0 && row.Ferie == false && row.Ufficio == true)) 
+        if(!(row.hours == 8 && row.rol == 0 && row.holiday == false && row.office == true)) 
         {
-          if(row.Ferie == true)
+          if(row.holiday == true)
           {
-            row.Ore = 0, row.Rol = 0, row.Ufficio = false
+            row.hours = 0, row.rol = 0, row.office = false
           }
           
           cleanTable.push(this.timeTableStore.timeTableRequestAdapter(row,userId));
@@ -99,16 +101,51 @@ export class TimeTableComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.dateTimeService.saveTable(cleanTable)
-    .pipe(first())
-    .subscribe({
-      next: () => {
-        this.alertService.success('Table Save Succesfull')
-      },
-      error: error => {
-        this.alertService.error(error);
-      }
-    });
+    if(cleanTable.length >= 1) {
+      this.dateTimeService.saveTable(cleanTable)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.alertService.success('Table Save Succesfull')
+        },
+        error: error => {
+          this.alertService.error(error);
+        }
+      });
+    } else {
+      this.defaultTable(userId);
+    }
+  }
+
+
+  // This method cleans the Monthly table from the DB
+  defaultTable = (userId: string) => {
+    let month: number = 0;
+    let year: number  = 0;
+    
+     this.monthlyTable$.subscribe(currentTable => { 
+      month = currentTable[0].date.getMonth() + 1
+      year  = currentTable[0].date.getFullYear()  
+     })
+
+     if(!!month && month !=0) {
+      let info: TimeTableInfo = {
+        UserId: userId,
+        Month: month,
+        Year: year
+      };
+
+      this.dateTimeService.deleteTable(info)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.alertService.success('Table Restore Succesfully')
+        },
+        error: error => {
+          this.alertService.error(error);
+        }
+      })
+    }
   }
 
   // *EXPORT TABLE SECTION
@@ -131,11 +168,11 @@ export class TimeTableComponent implements OnInit, OnDestroy {
     this.monthlyTable$.subscribe(result => dataTable = result);
     let dataTableMapped = dataTable.map(x => ({
       Risorsa: name,
-      Date: x.Date,
-      Ore:  x.Ferie ? '' : x.Ore,
-      Rol:  x.Rol ? x.Rol: '',
-      Ferie: x.Ferie ? '1': '',
-      Ufficio: x.Ferie ? '' : x.Ufficio ? 1: '' // If is holiday it should not sum the office hours. First control on holiday, second on Office
+      Date: x.date,
+      Ore:  x.holiday ? '' : x.hours,
+      Rol:  x.rol ? x.rol: '',
+      Ferie: x.holiday ? '1': '',
+      Ufficio: x.holiday ? '' : x.office ? 1: '' // If is holiday it should not sum the office hours. First control on holiday, second on Office
     }))
 
     let totRow: any = {
@@ -166,7 +203,7 @@ export class TimeTableComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       this.name = result;
-      if(result.length > 2){
+      if(result.length > 2) {
         this.exportMaterialTable(result)
       }
     });

@@ -1,9 +1,9 @@
 export class TimeTableItem {
-  Date!: Date;
-  Ore!:  number;
-  Rol!:  number;
-  Ferie!: boolean;
-  Ufficio!: boolean;
+  date!: Date;
+  hours!:  number;
+  rol!:  number;
+  holiday!: boolean;
+  office!: boolean;
 }
 
 export class Holiday {

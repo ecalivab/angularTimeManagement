@@ -51,7 +51,7 @@ export class AlertComponent implements OnInit {
       this.routeSubscription.unsubscribe();
   }
 
-  removeAlert(alert: Alert) {
+  removeAlert = (alert: Alert) => {
       // check if already removed to prevent error on auto close
       if (!this.alerts.includes(alert)) return;
 
@@ -69,10 +69,10 @@ export class AlertComponent implements OnInit {
       }
   }
 
-  cssClass(alert: Alert) {
+  cssClass = (alert: Alert) => {
       if (!alert) return;
 
-      const classes = ['alert', 'alert-dismissable', 'mt-4', 'container'];
+      const classes = ['alert', 'alert-dismissable', 'mt-4','container'];
               
       const alertTypeClass = {
           [AlertType.Success]: 'alert alert-success',

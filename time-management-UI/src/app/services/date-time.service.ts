@@ -1,14 +1,14 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, shareReplay, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Holiday, HOLIDAYS, TimeTableInfo, TimeTableItem, TimeTableRequest } from '../models/time-table';
 import { TimeTableStore } from '../store/time-table.store';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
-
 
 export class DateTimeService {
 
@@ -19,33 +19,43 @@ export class DateTimeService {
   private _text: BehaviorSubject<string> = new BehaviorSubject('');
   text$:Observable<string> = this._text.asObservable();
   
-  updateText(hello:string){
+  updateText = (hello:string) => {
     this._text.next(hello);
     this.text$ = this._text;
   }
   //--------------End of Test ----------------------
 
 
-  //* The MonthlyTable will store the todo items in memory.
+  //* The MonthlyTable will store the TimeTable rows in memory.
   private MonthlyTable: TimeTableItem[] = [];
 
   constructor(
     private readonly timeTableStore: TimeTableStore,
+    private authService: AuthService,
     private readonly httpClient: HttpClient) { }
-
-
+  
   //--------------- API CALLS-----------------------
   readonly url: string = environment.apiURL
   readonly httpOptions: {} = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' })
   }
 
+  getTable(info: TimeTableInfo): Observable<TimeTableItem[]> {
+     return this.httpClient.get<TimeTableItem[]>(`${this.url}/TimeTable/get/${info.UserId}/${info.Month}/${info.Year}`).pipe(catchError(this.handleError), shareReplay())
+   }
+
   saveTable(table: TimeTableRequest[]) : Observable<any> {
     return this.httpClient.post(`${this.url}/TimeTable/save`, table).pipe(catchError(this.handleError))
   }
-  
+
+  deleteTable(info: TimeTableInfo) : Observable<any> {
+    return this.httpClient
+    .delete(`${this.url}/TimeTable/delete/${info.UserId}/${info.Month}/${info.Year}`)
+    .pipe(catchError(this.handleError))
+  }
+
    // Error
-  handleError(error: HttpErrorResponse) {
+  handleError = (error: HttpErrorResponse) => {
     let msg = '';
     if (error.error instanceof ErrorEvent) {
       // client-side error
@@ -60,24 +70,32 @@ export class DateTimeService {
   //----------------END API CALLS---------------------
 
 
-  isHoliday(itemDate: Date): Boolean {
+  isHoliday = (itemDate: Date): Boolean => {
     return this.holidays.some(h => h.Date.getTime() == itemDate.getTime())
   }
 
-  createTable (month: number, year: number): void {
+  createTable = (month: number, year: number, userRows: TimeTableItem[]): void => {
     var date = new Date(year, month, 1);
+    var tmpFnd: TimeTableItem = new TimeTableItem();
     while (date.getMonth() === month) {
       var item:TimeTableItem = {
-        Date: new Date(date),
-        Ore: 8,
-        Rol:0,
-        Ferie: false,
-        Ufficio: true, 
+        date: new Date(date.setHours(0,0,0,0)),
+        hours: 8,
+        rol:0,
+        holiday: false,
+        office: true, 
       }
-
-      if(item.Date.getDay() !== 0 && item.Date.getDay() !== 6) {
-         if(!this.isHoliday(item.Date))
-        this.MonthlyTable.push(item);
+      if(item.date.getDay() !== 0 && item.date.getDay() !== 6) {
+         if(!this.isHoliday(item.date)) {
+          if(userRows.length > 0) {
+            tmpFnd = userRows.find(row => new Date(row.date).toISOString() === item.date.toISOString())!
+            if(!!tmpFnd)
+            {
+               this.MonthlyTable.push(tmpFnd);
+            }
+          }
+          this.MonthlyTable.push(item);
+         }        
       }
       date.setDate(date.getDate() + 1);
     }
@@ -85,18 +103,33 @@ export class DateTimeService {
     return;
   }
 
+  prepareTable = (month: number, year: number): void => {
+    if(this.authService.isUserLogged()) {
+      var info: TimeTableInfo = 
+      {
+        UserId: this.authService.getCurrentUserLocalStore().id,
+        Month: month+1,
+        Year: year
+      }
+      this.getTable(info).subscribe(val => {
+         this.createTable(month, year, val);
+      });
+      return;
+    }
+    this.createTable(month, year, []);
+  }
 
-  clear(){
+  clear = () => {
     this.MonthlyTable = [];
     this.timeTableStore.clear();
   }
 
-  updateTableOnChange(dataSource: TimeTableItem[]) {
+  updateTableOnChange = (dataSource: TimeTableItem[]) => {
     this.timeTableStore.updateTimeTableOnChange(dataSource);
   }
 
-  getNewMonth(direction: string): void {
-      const data = this.MonthlyTable.length > 0 ? {'currentMonth': this.MonthlyTable[0].Date.getMonth(), 'currentYear':this.MonthlyTable[0].Date.getFullYear()} : {'currentMonth':-10, 'currentYear':-10};
+  getNewMonth = (direction: string): void => {
+      const data = this.MonthlyTable.length > 0 ? {'currentMonth': new Date(this.MonthlyTable[0].date).getMonth(), 'currentYear': new Date(this.MonthlyTable[0].date).getFullYear()} : {'currentMonth':-10, 'currentYear':-10};
       if(data.currentMonth == -10) {
         alert("Something Wrong Happend!!!");
         return;
@@ -104,10 +137,10 @@ export class DateTimeService {
       const newMonth = direction == 'up' ? data.currentMonth + 1 : data.currentMonth -1;
       const checkedData = this.checkNewYear(newMonth,data.currentYear);
       this.clear();
-      this.createTable(checkedData.month,checkedData.year);    
+      this.prepareTable(checkedData.month,checkedData.year);    
   }
 
-  checkNewYear(month: number, year: number): any {
+  checkNewYear = (month: number, year: number): any => {
     if(month > 11) {
       year+=1;
       month = 0;
@@ -121,7 +154,7 @@ export class DateTimeService {
     return {month, year};
   }
 
-  getRemaindingWorkDays(): number {
+  getRemaindingWorkDays = (): number => {
     let counter = 0;
     let dateObj = new Date();
     let currMonth = dateObj.getMonth(); 
@@ -135,7 +168,7 @@ export class DateTimeService {
     return counter;
   }
 
-  getCurrentMonthTotalWorkDays(): number {
+  getCurrentMonthTotalWorkDays = (): number => {
     let counter = 0;
     let dateObj = new Date();
     let currMonth = dateObj.getMonth();
@@ -161,19 +194,19 @@ export class DateTimeService {
  
   //* SECTION FOR XLS return normal values
 
-  getNormalWorkingDays(): number{
-    return this.MonthlyTable.filter(item=> item.Ferie === false).length;
+  getNormalWorkingDays = (): number => {
+    return this.MonthlyTable.filter(item=> item.holiday === false).length;
   }
 
-  getNormalHolidays(): number {
-    return this.MonthlyTable.filter(item => item.Ferie === true).length;
+  getNormalHolidays = (): number => {
+    return this.MonthlyTable.filter(item => item.holiday === true).length;
   }
   
-  getNormalOfficeDays(): number {
-    return this.MonthlyTable.filter(item => item.Ferie === false && item.Ufficio === true).length;
+  getNormalOfficeDays = (): number => {
+    return this.MonthlyTable.filter(item => item.holiday === false && item.office === true).length;
   }
 
-  getNormalTotalRolHours(): number {
-    return this.MonthlyTable.filter(item=> item.Ferie === false).reduce((sum, current) => sum+ current.Rol, 0);
+  getNormalTotalRolHours = (): number => {
+    return this.MonthlyTable.filter(item=> item.holiday === false).reduce((sum, current) => sum+ current.rol, 0);
   }
 }
