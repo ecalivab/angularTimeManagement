@@ -49,47 +49,5 @@ export abstract class TimeTableStore {
             UserId: userId,
         };
         return adaptedRow;
-    }
-
-    //* OBSERVABLE SECCION FOR STATISTICS
-    getTotalHours = (): Observable<number> => {
-        return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.holiday === false).reduce((sum, current) => sum+ current.hours, 0)));
-    }
-
-    getWorkingDays = (): Observable<number> => {
-        return this.MonthlyTable$.pipe(map(result=> result.filter(item=> item.holiday === false).length));
-    }
-
-    getHolidays = (): Observable<number> => {
-        return this.MonthlyTable$.pipe(map(result => result.filter(item => item.holiday === true).length));
-    }
-    
-    getOfficeDays = (): Observable<number> => {
-        return this.MonthlyTable$.pipe(map(result => result.filter(item => item.holiday === false && item.office === true).length));
-    }
-
-    getTotalRolHours = (): Observable<number> => {
-        return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.holiday === false).reduce((sum, current) => sum+ current.rol, 0)));
-    }
-
-    getTotalWorkingDays = (): Observable<number> => {
-        return this.MonthlyTable$.pipe(map(result => result.length));
-    }
-
-    getMonthInTable = (): Observable<Date> => {
-        return this.MonthlyTable$.pipe(map(res => res.length> 0 ? res[0].date : new Date()), //Add a Control because when I clear the array it cannot read the property Date and fail.
-        catchError(this.handleError<any>('new Date()'))
-        );
-    }
-
-    private handleError<T>(operation = 'operation', result?: T) {
-        return (error: any): Observable<T> => {
-            // TODO: send the error to remote logging infrastructure
-            console.error(error); // log to console instead
-            // TODO: better job of transforming error for user consumption
-            //this.log(`${operation} failed: ${error.message}`);
-            // Let the app keep running by returning an empty result.
-            return of(result as T);
-        };
-    }
+    }    
 }

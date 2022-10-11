@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, shareReplay, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, shareReplay, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Holiday, HOLIDAYS, TimeTableInfo, TimeTableItem, TimeTableRequest } from '../models/time-table';
 import { TimeTableStore } from '../store/time-table.store';
@@ -11,10 +11,6 @@ import { AuthService } from './auth.service';
 })
 
 export class DateTimeService {
-
-  holidays = HOLIDAYS
-  gHolidays:Holiday[] = [];
-
   // -------- Test of an Observable Strong ---------
   private _text: BehaviorSubject<string> = new BehaviorSubject('');
   text$:Observable<string> = this._text.asObservable();
@@ -25,15 +21,18 @@ export class DateTimeService {
   }
   //--------------End of Test ----------------------
 
-
-  //* The MonthlyTable will store the TimeTable rows in memory.
-  private MonthlyTable: TimeTableItem[] = [];
-
   constructor(
     private readonly timeTableStore: TimeTableStore,
     private authService: AuthService,
     private readonly httpClient: HttpClient) { }
   
+
+  holidays = HOLIDAYS
+  gHolidays:Holiday[] = [];
+  //* The MonthlyTable will store the TimeTable rows in memory.
+  private MonthlyTable: TimeTableItem[] = [];
+  readonly MonthlyTable$: Observable<TimeTableItem[]> = this.timeTableStore.MonthlyTable$;
+
   //--------------- API CALLS-----------------------
   readonly url: string = environment.apiURL
   readonly httpOptions: {} = {
@@ -41,21 +40,21 @@ export class DateTimeService {
   }
 
   getTable(info: TimeTableInfo): Observable<TimeTableItem[]> {
-     return this.httpClient.get<TimeTableItem[]>(`${this.url}/TimeTable/get/${info.UserId}/${info.Month}/${info.Year}`).pipe(catchError(this.handleError), shareReplay())
+     return this.httpClient.get<TimeTableItem[]>(`${this.url}/TimeTable/get/${info.UserId}/${info.Month}/${info.Year}`).pipe(catchError(this.handleHttpError), shareReplay())
    }
 
   saveTable(table: TimeTableRequest[]) : Observable<any> {
-    return this.httpClient.post(`${this.url}/TimeTable/save`, table).pipe(catchError(this.handleError))
+    return this.httpClient.post(`${this.url}/TimeTable/save`, table).pipe(catchError(this.handleHttpError))
   }
 
   deleteTable(info: TimeTableInfo) : Observable<any> {
     return this.httpClient
     .delete(`${this.url}/TimeTable/delete/${info.UserId}/${info.Month}/${info.Year}`)
-    .pipe(catchError(this.handleError))
+    .pipe(catchError(this.handleHttpError))
   }
 
    // Error
-  handleError = (error: HttpErrorResponse) => {
+  handleHttpError = (error: HttpErrorResponse) => {
     let msg = '';
     if (error.error instanceof ErrorEvent) {
       // client-side error
@@ -191,7 +190,49 @@ export class DateTimeService {
 
     return counter;
   }
- 
+
+//* OBSERVABLE SECCION FOR STATISTICS
+    getTotalHours = (): Observable<number> => {
+        return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.holiday === false).reduce((sum, current) => sum+ current.hours, 0)));
+    }
+
+    getWorkingDays = (): Observable<number> => {
+        return this.MonthlyTable$.pipe(map(result=> result.filter(item=> item.holiday === false).length));
+    }
+
+    getHolidays = (): Observable<number> => {
+        return this.MonthlyTable$.pipe(map(result => result.filter(item => item.holiday === true).length));
+    }
+    
+    getOfficeDays = (): Observable<number> => {
+        return this.MonthlyTable$.pipe(map(result => result.filter(item => item.holiday === false && item.office === true).length));
+    }
+
+    getTotalRolHours = (): Observable<number> => {
+        return this.MonthlyTable$.pipe(map(result => result.filter(item=> item.holiday === false).reduce((sum, current) => sum+ current.rol, 0)));
+    }
+
+    getTotalWorkingDays = (): Observable<number> => {
+        return this.MonthlyTable$.pipe(map(result => result.length));
+    }
+
+    getMonthInTable = (): Observable<Date> => {
+        return this.MonthlyTable$.pipe(map(res => res.length> 0 ? res[0].date : new Date()), //Add a Control because when I clear the array it cannot read the property Date and fail.
+        catchError(this.handleError<any>('new Date()'))
+        );
+    }
+
+    private handleError<T>(operation = 'operation', result?: T) {
+        return (error: any): Observable<T> => {
+            // TODO: send the error to remote logging infrastructure
+            console.error(error); // log to console instead
+            // TODO: better job of transforming error for user consumption
+            //this.log(`${operation} failed: ${error.message}`);
+            // Let the app keep running by returning an empty result.
+            return of(result as T);
+        };
+    }
+    
   //* SECTION FOR XLS return normal values
 
   getNormalWorkingDays = (): number => {

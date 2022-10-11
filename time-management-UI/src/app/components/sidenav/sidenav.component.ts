@@ -3,7 +3,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { menuList } from './menu-list';
-import { UserStore } from 'src/app/store/user.store';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -16,8 +15,8 @@ export class SidenavComponent implements OnInit {
   menuItems = menuList;
   collapse: boolean = false;
 
-  currentUser$: Observable<User> = this.userStore.user$;
-  userLogged$:  Observable<boolean> = this.userStore.userLogged$;
+  currentUser$: Observable<User> = this.authService.user$;
+  userLogged$:  Observable<boolean> = this.authService.userLogged$;
 
   // If user is not logged the route should be home otherwise it is "enabled"
   userProfileRoute: string = 'home';
@@ -36,15 +35,15 @@ export class SidenavComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private readonly userStore: UserStore,
     private readonly authService: AuthService
     ) {}
 
     ngOnInit(): void {
-      this.currentUser = this.authService.getCurrentUserLocalStore()
+      //* If User is in local storage, update the observable with the user values.
+      this.currentUser = this.authService.getCurrentUserLocalStore();
       if(this.currentUser !== null) 
       {
-        this.userStore.updateUser(this.currentUser);
+        this.authService.updateUser(this.currentUser);
       }
       this.userLogged$.subscribe(val => this.userProfileRoute = val ? "user-profile" : "home");     
     }

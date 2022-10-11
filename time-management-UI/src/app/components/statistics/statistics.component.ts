@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest ,map,Observable } from 'rxjs';
 import { TimeTableItem } from 'src/app/models/time-table';
-import { TimeTableStore } from 'src/app/store/time-table.store';
 import { DateTimeService } from '../../services/date-time.service';
 
 @Component({
@@ -18,8 +17,7 @@ export class StatisticsComponent implements OnInit {
   
   //*We inject dateTimeService
   constructor(
-    private dateTimeService: DateTimeService,
-    private readonly timeTableStore: TimeTableStore) {}
+    private dateTimeService: DateTimeService) { }
 
   monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
   workingHours$: Observable<number> = new Observable<number>();
@@ -28,7 +26,7 @@ export class StatisticsComponent implements OnInit {
   officeDays$: Observable<number>   = new Observable<number>();
   rolHours$: Observable<number>     = new Observable<number>();
 
-  totalMonthlyWorkDays$: Observable<number> = this.timeTableStore.getTotalWorkingDays();
+  totalMonthlyWorkDays$: Observable<number> = this.dateTimeService.getTotalWorkingDays();
  
   totalHourPercentage$: Observable<number> = new Observable<number>();
   totalWorkingDaysPercentage$: Observable<number> = new Observable<number>();
@@ -51,13 +49,13 @@ export class StatisticsComponent implements OnInit {
     // ---------------END TEST-------------------
 
     //* We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of Todo items.
-    this.monthlyTable$ = this.timeTableStore.MonthlyTable$;
-    this.workingDays$  = this.timeTableStore.getWorkingDays();
-    this.holidays$     = this.timeTableStore.getHolidays();
-    this.officeDays$   = this.timeTableStore.getOfficeDays();
-    this.rolHours$     = this.timeTableStore.getTotalRolHours();
+    this.monthlyTable$ = this.dateTimeService.MonthlyTable$;
+    this.workingDays$  = this.dateTimeService.getWorkingDays();
+    this.holidays$     = this.dateTimeService.getHolidays();
+    this.officeDays$   = this.dateTimeService.getOfficeDays();
+    this.rolHours$     = this.dateTimeService.getTotalRolHours();
     
-    this.workingHours$ = combineLatest([this.rolHours$, this.timeTableStore.getTotalHours()]).pipe(map(([rol,hour]) => Math.abs(rol-hour)));
+    this.workingHours$ = combineLatest([this.rolHours$, this.dateTimeService.getTotalHours()]).pipe(map(([rol,hour]) => Math.abs(rol-hour)));
 
     this.totalHourPercentage$ = combineLatest([this.workingHours$, this.totalMonthlyWorkDays$]).pipe(map(([wh,mwd]) => (wh/(mwd*8))*100));
     this.totalWorkingDaysPercentage$ = combineLatest([ this.workingDays$, this.totalMonthlyWorkDays$]).pipe(map(([wd,mwd]) => (wd/(mwd))*100));

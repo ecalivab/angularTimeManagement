@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Route, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
-import { UserStore } from 'src/app/store/user.store';
 
 @Component({
   selector: 'app-log-in',
@@ -18,11 +16,10 @@ export class LogInComponent implements OnInit {
   submitted = false;
   constructor( 
     private formBuilder: FormBuilder,
-    private readonly userStore: UserStore,
     private authService: AuthService) { }
 
-  currentUser$: Observable<User> = this.userStore.user$;
-  userLogged$:  Observable<boolean> = this.userStore.userLogged$;
+  currentUser$: Observable<User> = this.authService.user$;
+  userLogged$:  Observable<boolean> = this.authService.userLogged$;
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({

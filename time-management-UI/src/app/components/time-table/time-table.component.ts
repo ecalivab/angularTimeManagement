@@ -6,9 +6,9 @@ import { first, Observable, Subscription } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
 import { TimeTableInfo, TimeTableItem, TimeTableRequest } from 'src/app/models/time-table';
-import { TimeTableStore } from 'src/app/store/time-table.store';
 import { AuthService } from 'src/app/services/auth.service';
 import { AlertService } from 'src/app/services/alert.service';
+import { TimeTableStore } from 'src/app/store/time-table.store';
 
 @Component({
   selector: 'app-time-table',
@@ -17,14 +17,6 @@ import { AlertService } from 'src/app/services/alert.service';
 })
 
 export class TimeTableComponent implements OnInit, OnDestroy {
-  
-  dataSource:any; //* Holds Table Source Data.
-  selection:any; //* Array to get save the rows of Holidays selected.
-  displayedColumns:string[] = [];
-  monthlyTable$: Observable<TimeTableItem[]> = new Observable<TimeTableItem[]>();
-  monthyTableSubscription$: Subscription = new Subscription();
-  name: string = '';
-
   constructor(
     private dateTimeService: DateTimeService,
     private readonly timeTableStore: TimeTableStore,
@@ -36,14 +28,20 @@ export class TimeTableComponent implements OnInit, OnDestroy {
      /* Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
      this.displayedColumns = ['Date', 'Hours','Rol','Holidays', 'Office'];
   }
-  
+
+  dataSource:any; //* Holds Table Source Data.
+  selection:any; //* Array to get save the rows of Holidays selected.
+  displayedColumns:string[] = [];
+  //* We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of items.
+  monthlyTable$: Observable<TimeTableItem[]> = this.dateTimeService.MonthlyTable$;
+  monthyTableSubscription$: Subscription = new Subscription();
+  name: string = '';
+ 
   ngOnInit(): void {
     // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    this.clearTable();
-    //* We get hold of the monthlyTable$ observable. We are not doing anything with it But you can subscribe to it to get the latest list of items.
+    this.clearTable();    
     //* Create the table passing the new dataSource  
     this.getDefaultMonthlyTable();
-    this.monthlyTable$ = this.timeTableStore.MonthlyTable$;
     //* Since dataSource is subscribe ngOnInit and will detect all the changes there is no need to update the dataSource on the clearTable(), nextMonth() ...
     this.monthyTableSubscription$ = this.monthlyTable$.subscribe(result => this.dataSource = new MatTableDataSource<TimeTableItem>(result));
   }
@@ -60,6 +58,16 @@ export class TimeTableComponent implements OnInit, OnDestroy {
     let month = dateObj.getMonth(); 
     let year = dateObj.getFullYear();
     this.dateTimeService.prepareTable(month,year);
+  }
+
+  cleanTable = () => {
+    //TODO: Get the values of the current Table Table
+    // First we delete the current table to recreate it back again with the default values.
+    this.clearTable();
+    let dateObj = new Date();
+    let month = dateObj.getMonth(); 
+    let year = dateObj.getFullYear();
+    this.dateTimeService.createTable(month, year, []);
   }
   
   updateTable = (table:TimeTableItem[]) => {

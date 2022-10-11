@@ -4,9 +4,7 @@ import { DateTimeService } from '../../services/date-time.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { CardContent } from './card-content';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UserStore } from 'src/app/store/user.store';
-import { TimeTableItem } from 'src/app/models/time-table';
-import { TimeTableStore } from 'src/app/store/time-table.store';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,17 +16,14 @@ export class DashboardComponent implements OnInit {
 
   constructor(private dateTimeService: DateTimeService, 
     private breakpointObserver: BreakpointObserver,
+    private authService: AuthService,
     public dialogHoliday: MatDialog, 
     public dialogVideo: MatDialog,
-    public readonly userStore: UserStore,
-    public readonly timeTableStore: TimeTableStore
-    ) {
-      this.dateTimeService.getCurrentMonthTotalWorkDays();
-    }
+    ) { }
 
   monthInTable$: Observable<Date> = new Observable<Date>();
 
-  userLogged$:  Observable<boolean> = this.userStore.userLogged$;
+  userLogged$:  Observable<boolean> = this.authService.userLogged$;
   isUserLogged: boolean = false;
 
   columns:number = 4;
@@ -109,13 +104,12 @@ export class DashboardComponent implements OnInit {
         break;
       default:
         break;
-
     }
   }
 
   ngOnInit(): void {
     //*We get hold of the monthlyTable$ observable. We are not doing anyting with it But you can subscribe to it to get the latest list of Table items.
-    this.monthInTable$ = this.timeTableStore.getMonthInTable();
+    this.monthInTable$ = this.dateTimeService.getMonthInTable();
 
     this.userLogged$.subscribe(val => this.isUserLogged = val)
 
