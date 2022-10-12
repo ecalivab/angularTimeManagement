@@ -73,9 +73,24 @@ export class DateTimeService {
     return this.holidays.some(h => h.Date.getTime() == itemDate.getTime())
   }
 
+   checkUserRow = (dbArray:TimeTableItem[], item: TimeTableItem): TimeTableItem =>  {
+    let tmpFnd: TimeTableItem = new TimeTableItem();
+    let index: number = -1;
+    if(dbArray.length > 0) {
+      index = dbArray.findIndex(row => new Date(row.date).toISOString() === item.date.toISOString())!
+      if(index > -1)
+      {
+        //* I remove the entry of the array since I don't need it anymore so the next find works with less data. 
+        tmpFnd = dbArray[index]
+        dbArray.splice(index, 1);
+        return tmpFnd;
+      } 
+    }
+    return item;         
+  }
+
   createTable = (month: number, year: number, userRows: TimeTableItem[]): void => {
     var date = new Date(year, month, 1);
-    var tmpFnd: TimeTableItem = new TimeTableItem();
     while (date.getMonth() === month) {
       var item:TimeTableItem = {
         date: new Date(date.setHours(0,0,0,0)),
@@ -86,14 +101,7 @@ export class DateTimeService {
       }
       if(item.date.getDay() !== 0 && item.date.getDay() !== 6) {
          if(!this.isHoliday(item.date)) {
-          if(userRows.length > 0) {
-            tmpFnd = userRows.find(row => new Date(row.date).toISOString() === item.date.toISOString())!
-            if(!!tmpFnd)
-            {
-               this.MonthlyTable.push(tmpFnd);
-            }
-          }
-          this.MonthlyTable.push(item);
+          this.MonthlyTable.push(this.checkUserRow(userRows, item))
          }        
       }
       date.setDate(date.getDate() + 1);
