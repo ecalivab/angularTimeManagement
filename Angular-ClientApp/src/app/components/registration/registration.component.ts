@@ -35,27 +35,26 @@ export class RegistrationComponent implements OnInit {
   // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
-     onSubmit() {
-        this.submitted = true;
-       
-        // stop here if form is invalid
-        if (this.form.invalid) {
-            return;
-        }
+    onSubmit() {
+      this.submitted = true;
+      
+      // stop here if form is invalid
+      if (this.form.invalid) {
+          return;
+      }
 
-        this.loading = true;
-        this.authService.register(this.form.value)
-          .pipe(first())
-          .subscribe({
-              next: () => {
-                  this.alertService.success('Registration successful', { keepAfterRouteChange: true });
-                  this.router.navigate(['../home']);
-              },
-              error: error => {
-                  this.alertService.error(error);
-                  this.loading = false;
-              }
-          });
+      this.loading = true;
+      this.authService.register(this.form.value)
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                this.alertService.success('Registration successful', { keepAfterRouteChange: true });
+                this.router.navigate(['../home']);
+            },
+            error: error => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        });
     }
-
 }

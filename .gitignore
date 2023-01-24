@@ -20,9 +20,9 @@ time-management-API/bin/Debug
 
 
 # Node
-time-management-UI/node_modules
-time-management-UI/npm-debug.log
-time-management-UI/yarn-error.log
+Angular-ClientApp/node_modules
+Angular-ClientApp/npm-debug.log
+Angular-ClientApp/yarn-error.log
 
 # IDEs and editors
 .idea/
@@ -46,13 +46,13 @@ time-management-UI/yarn-error.log
 time-management-UI/.vscode/
 
 # Miscellaneous
-time-management-UI/.angular/cache
-time-management-UI/.sass-cache/
-time-management-UI/connect.lock
-time-management-UI/coverage
-time-management-UI/libpeerconnection.log
-time-management-UI/testem.log
-time-management-UI/typings
+Angular-ClientApp/.angular/cache
+Angular-ClientApp/.sass-cache/
+Angular-ClientApp/connect.lock
+Angular-ClientApp/coverage
+Angular-ClientApp/libpeerconnection.log
+Angular-ClientApp/testem.log
+Angular-ClientApp/typings
 
 time-management-API/bin
 time-management-API/bin/*
