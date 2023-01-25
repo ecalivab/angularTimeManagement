@@ -1,0 +1,49 @@
+version: "3"
+services: 
+    proxy:
+        build: 
+            context: ./Proxy
+            dockerfile: Dockerfile
+        ports: 
+            - "8080:8080"
+        restart: always    
+    db:
+        image: mysql:latest
+        # command: '--default-authentication-plugin=mysql_native_password'
+        restart: unless-stopped
+        healthcheck:
+            test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="verysecretpassword" --silent']
+            interval: 3s
+            retries: 5
+            start_period: 30s
+        volumes:
+            - db-data:/var/lib/mysql
+        environment:
+            - MYSQL_USER=user
+            - MYSQL_DATABASE=TimeManagement
+            - MYSQL_PASSWORD=verysecretpassword
+            - MYSQL_ROOT_PASSWORD=verysecretpassword
+        ports:
+        - "3306:3306"
+        expose:
+            - 3306
+    client:
+        build:
+            context: ./Angular-ClientApp
+            dockerfile: Dockerfile
+        ports: 
+            - "9000:8080"
+
+    api:
+        # depends_on: 
+        #     db:
+        #         condition: service_healthy
+        build: 
+            context: ./time-management-API
+            dockerfile: Dockerfile
+        ports: 
+            - "5000:8080"
+
+volumes:
+    db-data:
+    

@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiURL: 'https://localhost:7141/api'
+  //apiURL: 'https://localhost:7141/api'
+  apiURL: '/api' // Docker use
 };
 
 /*

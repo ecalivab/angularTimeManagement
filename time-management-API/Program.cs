@@ -16,7 +16,8 @@ builder.Services.AddCors(options =>
                    policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
-builder.Services.AddDbContext<TimeManagementContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
+//builder.Services.AddDbContext<TimeManagementContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
+builder.Services.AddDbContext<TimeManagementContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("dbconnInsideDockerContainer")));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITimeTableService, TimeTableService>();
 
@@ -30,7 +31,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Commented because it was conflicting with the Docker DB Container
 
 app.UseAuthorization();
 
