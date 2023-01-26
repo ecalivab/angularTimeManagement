@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
 });
 
 //builder.Services.AddDbContext<TimeManagementContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
-builder.Services.AddDbContext<TimeManagementContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("dbconnInsideDockerContainer")));
+builder.Services.AddDbContext<TimeManagementContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("dbconnLocalhost")));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITimeTableService, TimeTableService>();
 

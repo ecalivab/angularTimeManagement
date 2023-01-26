@@ -1,0 +1,14 @@
+**/node_modules/
+**/dist
+.git
+npm-debug.log
+.coverage
+.coverage.*
+.env
+.aws
+
+Angular-ClientApp/node_modules/
+Angular-ClientApp/.vscode/
+Angular-ClientApp/.angular/
+
+time-management-API/bin/*

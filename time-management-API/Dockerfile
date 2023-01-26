@@ -4,6 +4,9 @@ WORKDIR /TimeManagementApp
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
+EXPOSE 5100
+EXPOSE 80
+
 # COPY all the layers CSPROJ 
 COPY time-management-API.csproj .
 
@@ -25,5 +28,3 @@ WORKDIR /TimeManagementApp
 COPY --from=publish /app/publish .
 RUN ls -l
 ENTRYPOINT [ "dotnet", "time-management-API.dll" ]
-
-EXPOSE 5000

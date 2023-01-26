@@ -56,7 +56,9 @@ Angular-ClientApp/typings
 
 time-management-API/bin
 time-management-API/bin/*
+time-management-API/bin/Debug/
 time-management-API/bin/Debug/*
+time-management-API/bin/Debug/net6.0/
 time-management-API/bin/Debug/net6.0/*
 
 time-management-API/bin/Debug/net6.0/time-management-API.pdb

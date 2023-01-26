@@ -1,18 +1,20 @@
 version: "3"
 services: 
-    proxy:
-        build: 
-            context: ./Proxy
-            dockerfile: Dockerfile
-        ports: 
-            - "8080:8080"
-        restart: always    
+    # proxy:
+    #     image: timemanagementregistry.azurecr.io/time-management-proxy:latest
+    #     build: 
+    #         context: ./Proxy
+    #         dockerfile: Dockerfile
+    #     ports: 
+    #         - "8080:8080"
+    #     restart: always    
     db:
         image: mysql:latest
         # command: '--default-authentication-plugin=mysql_native_password'
         restart: unless-stopped
+        container_name: timeManagement-DB
         healthcheck:
-            test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="verysecretpassword" --silent']
+            test: ['CMD-SHELL', 'mysqladmin ping -h localhost --password="verysecretpassword" --silent']
             interval: 3s
             retries: 5
             start_period: 30s
@@ -23,27 +25,45 @@ services:
             - MYSQL_DATABASE=TimeManagement
             - MYSQL_PASSWORD=verysecretpassword
             - MYSQL_ROOT_PASSWORD=verysecretpassword
+        networks:
+            - backend-net
         ports:
         - "3306:3306"
         expose:
             - 3306
     client:
+        image: timemanagementregistry.azurecr.io/time-management-client:latest
+        container_name: timeManagement-UI
         build:
             context: ./Angular-ClientApp
             dockerfile: Dockerfile
+        networks:
+            - frontent-net
         ports: 
-            - "9000:8080"
-
+            - "5200:80"
     api:
         # depends_on: 
         #     db:
         #         condition: service_healthy
+        image: timemanagementregistry.azurecr.io/time-management-api:latest
+        container_name: timeManagement-API
         build: 
             context: ./time-management-API
             dockerfile: Dockerfile
+        environment:
+        #   - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:5100;
+        networks:
+            - backend-net
+            - frontent-net
         ports: 
-            - "5000:8080"
+            - "5100:5100"
 
 volumes:
     db-data:
-    
+
+networks:
+    backend-net:
+        driver: bridge
+    frontent-net:
+        driver: bridge

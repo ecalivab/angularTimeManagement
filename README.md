@@ -25,3 +25,30 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Docker Compose with Proxy:
+
+Angular APIUrl hast to be define just like:  uri: string = "/api";
+
+
+version: "3"
+services: 
+    proxy:
+        build: 
+            context: ./Proxy
+            dockerfile: Dockerfile
+        ports: 
+            - "80:80"
+        restart: always
+    client:
+        build:
+            context: ./Client
+            dockerfile: Dockerfile
+        ports: 
+            - "9000:80"
+    api:
+        build: 
+            context: ./API
+            dockerfile: Dockerfile
+        ports: 
+            - "5000:80"

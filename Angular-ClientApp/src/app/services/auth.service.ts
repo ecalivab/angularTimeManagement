@@ -35,6 +35,7 @@ export class AuthService {
          data => {
             this.userStore.updateUser(data);
             localStorage.setItem('user', JSON.stringify(data))
+            this.router.navigate(['']);
           }
       )
   }
