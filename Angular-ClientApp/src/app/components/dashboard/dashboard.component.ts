@@ -114,7 +114,7 @@ export class DashboardComponent implements OnInit {
     this.userLogged$.subscribe(val => this.isUserLogged = val)
 
     //*Layout resize by breakpoint size (Medium-Handset)
-    this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.Medium, Breakpoints.XSmall, Breakpoints.Large, Breakpoints.XLarge]).subscribe((state: BreakpointState) => {
+    this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.Medium, Breakpoints.XSmall, Breakpoints.Large, Breakpoints.XLarge, '(min-width: 1280px) and (max-width: 1440px)']).subscribe((state: BreakpointState) => {
       if (state.breakpoints[Breakpoints.Medium]) {
         this.componentCols = 1;
         this.columns = 2;
@@ -123,9 +123,15 @@ export class DashboardComponent implements OnInit {
         this.componentCols = 1;
         this.columns = 1;
       }
+      
       if(state.breakpoints[Breakpoints.Large]) {
         this.componentCols = 2;
         this.columns = 4;
+      }
+
+      if(this.breakpointObserver.isMatched('(min-width: 1280px) and (max-width: 1440px)')) {
+        this.componentCols = 1;
+        this.columns = 2;
       }
 
       if(state.breakpoints[Breakpoints.XLarge]) {

@@ -21,7 +21,7 @@ export class AuthService {
   readonly userLogged$: Observable<boolean> = this.userStore.userLogged$;
   readonly url: string = environment.apiURL
   readonly httpOptions: {} = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' })
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Methods':'GET,POST,PATCH,DELETE,PUT,OPTIONS' })
   }
 
 
@@ -29,7 +29,7 @@ export class AuthService {
   
   //* We are calling *shareReplay* to prevent the receiver of this Observable from accidentally triggering multiple POST requests due to multiple subscriptions.
   login(email:string, password:string ): void {
-    this.httpClient.post<User>(`${this.url}/Auth/login`, {email, password}).pipe(
+    this.httpClient.post<User>(`${this.url}/Auth/login`, {email, password}, this.httpOptions).pipe(
        catchError(this.handleError), shareReplay()
       ).subscribe(
          data => {
@@ -41,7 +41,7 @@ export class AuthService {
   }
  
   register = (user: User): Observable<any> => {
-   return this.httpClient.post(`${this.url}/Auth/register`, user).pipe(catchError(this.handleError))
+   return this.httpClient.post(`${this.url}/Auth/register`, user, this.httpOptions).pipe(catchError(this.handleError))
   }
 
  //-------------------END HTTP CALLS--------------------------------

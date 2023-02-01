@@ -59,7 +59,7 @@ time-management-API/bin/*
 time-management-API/bin/Debug/
 time-management-API/bin/Debug/*
 time-management-API/bin/Debug/net6.0/
-time-management-API/bin/Debug/net6.0/*
+time-management-API/bin/Debug/net6.0/*.dll
 
 time-management-API/bin/Debug/net6.0/time-management-API.pdb
 time-management-API/bin/Debug/net6.0/time-management-API.dll
@@ -68,4 +68,3 @@ time-management-API/obj/staticwebassets.pack.sentinel
 # System files
 .DS_Store
 Thumbs.db
-

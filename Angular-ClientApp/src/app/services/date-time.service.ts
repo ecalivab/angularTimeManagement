@@ -36,20 +36,20 @@ export class DateTimeService {
   //--------------- API CALLS-----------------------
   readonly url: string = environment.apiURL
   readonly httpOptions: {} = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' })
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Methods':'GET,POST,PATCH,DELETE,PUT,OPTIONS' })
   }
 
   getTable(info: TimeTableInfo): Observable<TimeTableItem[]> {
-     return this.httpClient.get<TimeTableItem[]>(`${this.url}/TimeTable/get/${info.UserId}/${info.Month}/${info.Year}`).pipe(catchError(this.handleHttpError), shareReplay())
+     return this.httpClient.get<TimeTableItem[]>(`${this.url}/TimeTable/get/${info.UserId}/${info.Month}/${info.Year}`,this.httpOptions).pipe(catchError(this.handleHttpError), shareReplay())
    }
 
   saveTable(table: TimeTableRequest[]) : Observable<any> {
-    return this.httpClient.post(`${this.url}/TimeTable/save`, table).pipe(catchError(this.handleHttpError))
+    return this.httpClient.post(`${this.url}/TimeTable/save`, table, this.httpOptions).pipe(catchError(this.handleHttpError))
   }
 
   deleteTable(info: TimeTableInfo) : Observable<any> {
     return this.httpClient
-    .delete(`${this.url}/TimeTable/delete/${info.UserId}/${info.Month}/${info.Year}`)
+    .delete(`${this.url}/TimeTable/delete/${info.UserId}/${info.Month}/${info.Year}`, this.httpOptions)
     .pipe(catchError(this.handleHttpError))
   }
 

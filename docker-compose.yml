@@ -1,13 +1,13 @@
 version: "3"
 services: 
-    # proxy:
-    #     image: timemanagementregistry.azurecr.io/time-management-proxy:latest
-    #     build: 
-    #         context: ./Proxy
-    #         dockerfile: Dockerfile
-    #     ports: 
-    #         - "8080:8080"
-    #     restart: always    
+    proxy:
+        image: timemanagementregistry.azurecr.io/time-management-proxy:latest
+        build: 
+            context: ./Proxy
+            dockerfile: Dockerfile
+        ports: 
+            - "8080:8080"
+        restart: always    
     db:
         image: mysql:latest
         # command: '--default-authentication-plugin=mysql_native_password'
@@ -25,8 +25,8 @@ services:
             - MYSQL_DATABASE=TimeManagement
             - MYSQL_PASSWORD=verysecretpassword
             - MYSQL_ROOT_PASSWORD=verysecretpassword
-        networks:
-            - backend-net
+        #networks:
+        #    - backend-net
         ports:
         - "3306:3306"
         expose:
@@ -37,10 +37,10 @@ services:
         build:
             context: ./Angular-ClientApp
             dockerfile: Dockerfile
-        networks:
-            - frontent-net
+        #networks:
+        #    - frontent-net
         ports: 
-            - "5200:80"
+            - "5200:8080"
     api:
         # depends_on: 
         #     db:
@@ -50,20 +50,28 @@ services:
         build: 
             context: ./time-management-API
             dockerfile: Dockerfile
-        environment:
+        #environment:
         #   - ASPNETCORE_ENVIRONMENT=Development
-            - ASPNETCORE_URLS=http://+:5100;
-        networks:
-            - backend-net
-            - frontent-net
+        #   - ASPNETCORE_URLS=https://+:5100;
+        #networks:
+        #    - backend-net
+        #    - frontent-net
         ports: 
-            - "5100:5100"
+            - "5100:8080"
 
+#volumes:
+#    db-data:
+
+#Azure Volumes
 volumes:
     db-data:
+        driver: azure_file
+        driver_opts:
+            share_name: mydbdata
+            storage_account_name: timemanagementvolume
 
-networks:
-    backend-net:
-        driver: bridge
-    frontent-net:
-        driver: bridge
+#networks:
+#    backend-net:
+#        driver: bridge
+#    frontent-net:
+#        driver: bridge

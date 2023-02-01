@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /TimeManagementApp
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+RUN dotnet dev-certs https
 WORKDIR /src
 
 EXPOSE 5100
@@ -25,6 +26,8 @@ RUN dotnet publish -c Release -o /app/publish
 FROM base AS runtime
 WORKDIR /TimeManagementApp
 
+COPY --from=publish /root/.dotnet/corefx/cryptography/x509stores/my/* /root/.dotnet/corefx/cryptography/x509stores/my/
 COPY --from=publish /app/publish .
+
 RUN ls -l
 ENTRYPOINT [ "dotnet", "time-management-API.dll" ]

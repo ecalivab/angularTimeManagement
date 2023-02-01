@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
 });
 
 //builder.Services.AddDbContext<TimeManagementContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
-builder.Services.AddDbContext<TimeManagementContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("dbconnLocalhost")));
+builder.Services.AddDbContext<TimeManagementContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("dbconnAzure")));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITimeTableService, TimeTableService>();
 
@@ -37,6 +37,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.Run();
